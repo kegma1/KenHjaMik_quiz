@@ -1,0 +1,49 @@
+body {
+    background-color: #2f2f2f;
+    font-family: 'Roboto', sans-serif;
+    color: whitesmoke;
+    padding: 1vw;
+    
+}
+
+a {
+    color: aqua;
+}
+
+h1 {
+    text-decoration: underline;
+}
+
+article, section {
+    background-color: #3a3a3a;
+    padding: 1vw;
+    margin-top: 1vw;
+    margin-bottom: 1vw;
+    width: max-content;
+    border-radius: 10px;
+}
+
+code {
+    background-color: #2f2f2f;
+    outline-style: hidden;
+    outline-width: 1px;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+ul {
+    width: max-content;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+li {
+    background-color: #2f2f2f;
+    outline-style: hidden;
+    outline-width: 1px;
+    border-radius: 10px;
+    padding: 10px;
+}
