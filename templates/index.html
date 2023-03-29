@@ -1,6 +1,20 @@
 {% extends "base.html" %}
 {% block body %}
 <section>
-    <p>Hallo, Verden!</p>
+    <h1>Logg inn</h1>
+    <form action="{{ url_for("login") }}" method="post">
+        <label for="username">Brukernavn</label>
+        <input type="text" name="username" id="Uname">
+        
+        <label for="password">Passord</label>
+        <input type="text" name="password" id="Pass">
+
+        <label for="play">Play</label>
+        <input type="radio" name="select" id="SelPlay" value="play" checked="checked">
+        <label for="edit">edit</label>
+        <input type="radio" name="select" id="SelEdit" value="edit">
+
+        <input type="submit" value="Submit">
+    </form>
 </section>
 {% endblock %}
