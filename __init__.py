@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 app.secret_key = secrets.token_urlsafe(16)
 
-@app.route("/", methods = ["GET", "POST"])
+@app.route("/")
 def index():
     return render_template("index.html", title="login")
 
