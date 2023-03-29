@@ -39,7 +39,7 @@ def edit_list():
         if session["is_admin"] and session["is_logged_in"]:
             return "access granted"
 
-    return "access denied"
+    return redirect(url_for("index"))
 
 @app.route("/edit/<quiz>")
 def edit_quiz(quiz):
@@ -47,7 +47,7 @@ def edit_quiz(quiz):
         if session["is_admin"] and session["is_logged_in"]:
             return f"access granted {quiz}"
 
-    return "access denied"
+    return redirect(url_for("index"))
 
 @app.route("/play")
 def play_list():
@@ -55,7 +55,7 @@ def play_list():
         if session["is_logged_in"]:
             return "access granted"
 
-    return "access denied"
+    return redirect(url_for("index"))
 
 @app.route("/play/<quiz>")
 def play_quiz(quiz):
@@ -63,7 +63,7 @@ def play_quiz(quiz):
         if session["is_logged_in"]:
             return f"access granted {quiz}"
 
-    return "access denied"
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":
