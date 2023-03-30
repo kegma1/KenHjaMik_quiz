@@ -8,21 +8,21 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema stud_v23_kma150
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema stud_v23_kma150
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `stud_v23_kma150` DEFAULT CHARACTER SET utf8 ;
+USE `stud_v23_kma150` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`quiz`
+-- Table `stud_v23_kma150`.`quiz`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`quiz` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`quiz` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`quiz` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`quiz` (
   `Quiz_ID` INT NOT NULL AUTO_INCREMENT,
   `Quiz_name` VARCHAR(45) NOT NULL,
   `Quiz_description` TEXT NULL DEFAULT '\"\"',
@@ -32,11 +32,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`question`
+-- Table `stud_v23_kma150`.`question`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`question` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`question` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`question` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`question` (
   `Question_ID` INT NOT NULL AUTO_INCREMENT,
   `Question` TEXT NOT NULL,
   `Quiz` INT NOT NULL,
@@ -49,32 +49,32 @@ CREATE TABLE IF NOT EXISTS `mydb`.`question` (
   INDEX `fk_question_quiz_idx` (`Quiz` ASC) VISIBLE,
   CONSTRAINT `fk_question_quiz`
     FOREIGN KEY (`Quiz`)
-    REFERENCES `mydb`.`quiz` (`Quiz_ID`)
+    REFERENCES `stud_v23_kma150`.`quiz` (`Quiz_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`user`
+-- Table `stud_v23_kma150`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`user` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`user` (
   `User_ID` INT NOT NULL AUTO_INCREMENT,
-  `Username` VARCHAR(45) NOT NULL,
-  `Password` VARCHAR(45) NOT NULL,
-  `Is_admin` TINYINT(1) NOT NULL DEFAULT 0,
+  `Username` VARCHAR(255) NOT NULL,
+  `Password` TEXT NOT NULL,
+  `Is_admin` TINYINT(1) NOT NULL,
   PRIMARY KEY (`User_ID`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`quiz_playthrough`
+-- Table `stud_v23_kma150`.`quiz_playthrough`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`quiz_playthrough` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`quiz_playthrough` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`quiz_playthrough` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`quiz_playthrough` (
   `Playthrough_ID` INT NOT NULL AUTO_INCREMENT,
   `User` INT NOT NULL,
   `Quiz` INT NOT NULL,
@@ -84,12 +84,12 @@ CREATE TABLE IF NOT EXISTS `mydb`.`quiz_playthrough` (
   INDEX `fk_quiz_playthrough_quiz1_idx` (`Quiz` ASC) VISIBLE,
   CONSTRAINT `fk_quiz_playthrough_user1`
     FOREIGN KEY (`User`)
-    REFERENCES `mydb`.`user` (`User_ID`)
+    REFERENCES `stud_v23_kma150`.`user` (`User_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_quiz_playthrough_quiz1`
     FOREIGN KEY (`Quiz`)
-    REFERENCES `mydb`.`quiz` (`Quiz_ID`)
+    REFERENCES `stud_v23_kma150`.`quiz` (`Quiz_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
