@@ -5,7 +5,7 @@ import mysql.connector
 from db_loggin import dbconfig
 
 conn = mysql.connector.connect(**dbconfig)
-cursor = conn.cursor()
+cursor = conn.cursor(prepared=True)
 
 app = Flask(__name__)
 
@@ -18,12 +18,22 @@ def index():
 @app.route("/login", methods = ["POST"])
 def login():
     if request.method == "POST":
-        print(request.form["select"])
+
+        get_users_query = "SELECT Username, Password, Is_admin  FROM `user` WHERE Username = %s;"
+        cursor.execute(get_users_query, (request.form["username"],))
+        user = cursor.fetchone()
+        # check if password is correct
+        if not check_password_hash(user[1], request.form["password"]):
+            return redirect(url_for("index"))
+
         if request.form["select"] == "edit":
-            ## check if is admin
             session["is_logged_in"] = True
-            session["is_admin"] = True
             session["username"] = request.form["username"]
+
+            if user[2] == 1:
+                session["is_admin"] = True
+            else:
+                session["is_admin"] = False
 
             return redirect(url_for("edit_list"))
         else:
