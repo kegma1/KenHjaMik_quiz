@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <section>
-    <h1>Logg inn</h1>
+    <h1>Log inn</h1>
     <form action="{{ url_for("login") }}" method="post">
         <label for="username">Brukernavn</label>
         <input type="text" name="username" id="Uname">
@@ -16,5 +16,6 @@
 
         <input type="submit" value="Submit">
     </form>
+    <a href="{{ url_for("sign_up")}}">Sign up</a>
 </section>
 {% endblock %}

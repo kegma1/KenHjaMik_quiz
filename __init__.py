@@ -22,6 +22,10 @@ def login():
         get_users_query = "SELECT Username, Password, Is_admin  FROM `user` WHERE Username = %s;"
         cursor.execute(get_users_query, (request.form["username"],))
         user = cursor.fetchone()
+
+        if user == None:
+            return redirect(url_for("index"))
+        
         # check if password is correct
         if not check_password_hash(user[1], request.form["password"]):
             return redirect(url_for("index"))
@@ -42,6 +46,40 @@ def login():
             session["username"] = request.form["username"]
 
             return redirect(url_for("play_list"))
+
+@app.route("/signup")
+def sign_up():
+    return render_template("sign_up.html", title="signup")
+
+@app.route("/newUser", methods = ["POST"])
+def new_user():
+    if request.method == "POST":
+        usename = request.form["username"]
+        password = request.form["password"]
+        confirm_password = request.form["passwordConfirm"]
+
+        if usename == "":
+            return redirect(url_for("sign_up"))
+        if password == "":
+            return redirect(url_for("sign_up"))
+        if password != confirm_password:
+            return redirect(url_for("sign_up"))
+        
+        get_users_query = "SELECT Username, Password, Is_admin  FROM `user` WHERE Username = %s;"
+        cursor.execute(get_users_query, (usename,))
+        if cursor.fetchall() == []:
+            hashed_password = generate_password_hash(password)
+            creat_new_user_query = """
+               INSERT INTO `user` (`Username`, `Password`, `Is_admin`) VALUES (%s, %s, 0) 
+            """
+            args = (usename, hashed_password)
+            cursor.execute(creat_new_user_query, args)
+            conn.commit()
+            return redirect(url_for("index"))
+        
+        return redirect(url_for("sign_up"))
+        
+
 
 @app.route("/edit")
 def edit_list():

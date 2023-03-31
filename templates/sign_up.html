@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+    <h1>Sign up</h1>
+    <form action="{{ url_for("new_user") }}" method="post">
+        <label for="username">Brukernavn</label>
+        <input type="text" name="username" id="Uname">
+        
+        <label for="password">Passord</label>
+        <input type="password" name="password" id="Pass">
+
+        <label for="password">Confirm passord</label>
+        <input type="password" name="passwordConfirm" id="Pass">
+
+        <input type="submit" value="Submit">
+    </form>
+    <a href="{{ url_for("index") }}">Log in</a>
+</section>
+{% endblock %}
