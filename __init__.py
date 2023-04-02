@@ -47,7 +47,6 @@ class LoginForm(Form):
 def index():
     form = LoginForm(request.form)
     if request.method == "POST" and form.validate():
-        print("login", form.login_type.data) 
         if form.login_type.data == "edit":
             session["is_logged_in"] = True
             session["username"] = form.username.data
