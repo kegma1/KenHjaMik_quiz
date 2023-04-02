@@ -2,15 +2,13 @@
 {% block body %}
 <section>
     <h1>Sign up</h1>
-    <form action="{{ url_for("new_user") }}" method="post">
-        <label for="username">Brukernavn</label>
-        <input type="text" name="username" id="Uname">
-        
-        <label for="password">Passord</label>
-        <input type="password" name="password" id="Pass">
-
-        <label for="password">Confirm passord</label>
-        <input type="password" name="passwordConfirm" id="Pass">
+    {% from "_form_helper.html" import render_field %}
+    <form method="post">
+        <dl>
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.confirm) }}
+        </dl>
 
         <input type="submit" value="Submit">
     </form>

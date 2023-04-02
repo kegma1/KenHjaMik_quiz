@@ -2,17 +2,13 @@
 {% block body %}
 <section>
     <h1>Log inn</h1>
-    <form action="{{ url_for("login") }}" method="post">
-        <label for="username">Brukernavn</label>
-        <input type="text" name="username" id="Uname">
-        
-        <label for="password">Passord</label>
-        <input type="password" name="password" id="Pass">
-
-        <label for="play">Play</label>
-        <input type="radio" name="select" id="SelPlay" value="play" checked="checked">
-        <label for="edit">Edit</label>
-        <input type="radio" name="select" id="SelEdit" value="edit">
+    {% from "_form_helper.html" import render_field %}
+    <form method="post">
+        <dl>
+            {{ render_field(form.username) }}
+            {{ render_field(form.password) }}
+            {{ render_field(form.login_type) }}
+        </dl>
 
         <input type="submit" value="Submit">
     </form>
