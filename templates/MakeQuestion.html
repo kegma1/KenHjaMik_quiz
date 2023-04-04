@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block body %}
+
+<section>
+    <h1>
+        Question:
+    </h1>
+    <h2>
+        <input type="text" id="question" name="question">
+    </h2>
+    <table>
+        <tr>
+            <th>Nr.</th>
+            <th>Answers</th>
+            <th>Check Correct</th>
+        </tr>
+        <tr>
+            <td>
+                1
+            </td>
+            <td>
+                <input type="text" id="Answer1" name="Answer1">
+            </td>
+            <td>
+                <input type="checkbox" id="checkbox1" name="checkbox1">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                2
+            </td>
+            <td>
+                <input type="text" id="Answer2" name="Answer2">
+            </td>
+            <td>
+                <input type="checkbox" id="checkbox2" name="checkbox2">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                3
+            </td>
+            <td>
+                <input type="text" id="Answer3" name="Answer3">
+            </td>
+            <td>
+                <input type="checkbox" id="checkbox3" name="checkbox3">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                4
+            </td>
+            <td>
+                <input type="text" id="Answer4" name="Answer4">
+            </td>
+            <td>
+                <input type="checkbox" id="checkbox4" name="checkbox4">
+            </td>
+        </tr>
+    </table>
+</section>
+
+{% endblock %}

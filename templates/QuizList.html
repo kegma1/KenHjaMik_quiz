@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+    <table>
+        <tr>
+            <th>Quiz nr.</th>
+            <th>Theme</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="Update">Update</a>
+                <br>
+                <a href="Delete">Delete</a>
+            </td>
+        </tr>
+    </table>
+
+    <form action="/edit" method="POST">
+        <input type="text" name = 'content' id="content">
+        <input type="submit" value="add quiz">
+    </form>
+</section>
+
+
+{% endblock %}

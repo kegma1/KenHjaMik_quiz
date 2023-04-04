@@ -93,21 +93,21 @@ def sign_up():
     return render_template("sign_up.html", title="sign up", form=form)
 
 
-@app.route("/edit")
+@app.route("/edit", methods = ["GET", "POST"])
 def edit_list():
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             return "access granted"
+    
+    return render_template("QuizList.html", title="Testing")
 
-    return redirect(url_for("index"))
-
-@app.route("/edit/<quiz>")
-def edit_quiz(quiz):
+@app.route("/edit/quiz")
+def edit_quiz():
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
-            return f"access granted {quiz}"
+            return f"access granted"
 
-    return redirect(url_for("index"))
+    return render_template("MakeQuestion.html", title="Testing")
 
 @app.route("/play")
 def play_list():
