@@ -93,13 +93,44 @@ def sign_up():
     return render_template("sign_up.html", title="sign up", form=form)
 
 
+class Quiz(Form):
+    quizName = StringField('Quiz_name', [validators.Length(min=1, max=25), validators.DataRequired()])
+    quizTheme = StringField('Quiz_description')
+
+    
+
 @app.route("/edit", methods = ["GET", "POST"])
 def edit_list():
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             return "access granted"
+        
+    form = Quiz(request.form)
+    if request.method == "POST" and form.validate():
+        name = form.quizName.data
+        theme = form.quizTheme.data
+
+        creat_new_quiz_query = """INSERT INTO `quiz` (`Quiz_name`, `Quiz_description`) VALUES (%s, %s)"""
+
+        args = (name, theme)
+        cursor.execute(creat_new_quiz_query, args)
+        conn.commit()
+        return redirect(url_for('edit_list'))
     
-    return render_template("QuizList.html", title="Testing")
+    get_quiz_query = "SELECT Quiz_name, Quiz_description, Quiz_ID, Total_questions FROM `quiz`"
+    cursor.execute(get_quiz_query)
+    quizList = cursor.fetchall()
+    
+    return render_template("QuizList.html", title="Quiz list", quizList = quizList)
+
+class Question(Form):
+    question = StringField('Question', [validators.Length(min=1, max=25), validators.DataRequired()])
+    answer1 = StringField('Answer1')
+    answer2 = StringField('Answer2')
+    answer3 = StringField('Answer3')
+    answer4 = StringField('Answer4')
+
+    correctAnswer = RadioField('', choices=[('radio1', 'radio1'), ('radio2', 'radio2'), ('radio3', 'radio3'), ('radio4', 'radio4')], default = None)
 
 @app.route("/edit/quiz")
 def edit_quiz():
