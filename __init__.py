@@ -123,6 +123,15 @@ def edit_list():
     
     return render_template("QuizList.html", title="Quiz list", quizList = quizList)
 
+@app.route('/delete/<int:id>')
+def delete(id):
+    id = [id]
+    delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
+    
+    cursor.execute(delQuery, id)
+    conn.commit()
+    return redirect(url_for('edit_list'))
+
 class Question(Form):
     question = StringField('Question', [validators.Length(min=1, max=25), validators.DataRequired()])
     answer1 = StringField('Answer1')

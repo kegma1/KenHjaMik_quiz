@@ -25,9 +25,9 @@
                 <td>{{ desc }}</td>
                 <td>{{ questions }}</td>
                 <td>
-                    <a href="Edit">Edit</a>
+                    <a href=/edit/quiz{{ nr }}>Edit</a>
                     <br>
-                    <a href="Delete">Delete</a>
+                    <a href=/delete/{{ nr }}>Delete</a>
                 </td>
             </tr>
         {% endfor %}
