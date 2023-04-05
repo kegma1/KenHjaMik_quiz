@@ -141,13 +141,24 @@ class Question(Form):
 
     correctAnswer = RadioField('', choices=[('radio1', 'radio1'), ('radio2', 'radio2'), ('radio3', 'radio3'), ('radio4', 'radio4')], default = None)
 
-@app.route("/edit/quiz")
-def edit_quiz():
+@app.route("/edit/quiz<int:id>")
+def edit_quiz(id):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             return f"access granted"
+    quizID = id
+    form = Question(request.form)
+    if request.method == 'POST' and form.validate():
+        question = form.question.data
 
-    return render_template("MakeQuestion.html", title="Testing")
+        creat_new_question = """INSERT INTO `question` (`Question`, `Quiz`) VALUES (%s, %s)"""
+        args = (question, id)
+        cursor.execute(creat_new_question, args)
+        conn.commit()
+        return(url_for('edit_quiz'))
+
+
+    return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID)
 
 @app.route("/play")
 def play_list():

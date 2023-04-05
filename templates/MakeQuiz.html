@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block body %}
+
+<section>
+    <h1>Make questions: </h1>
+    <form action=/edit/quiz{{ quizID }} method="POST">
+        <input type="text" name = 'Question' id="Question">
+        <input type="submit" value="add question">
+    </form>
+    <h2>Question List:</h2>
+    <table>
+        <tr>
+            <th>Question nr.</th>
+            <th>Question</th>
+            <th>Actions</th>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="Update">Update</a>
+                <br>
+                <a href="Delete">Delete</a>
+            </td>
+        </tr>
+    </table>
+
+</section>
+
+{% endblock %}
