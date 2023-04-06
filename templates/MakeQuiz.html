@@ -9,20 +9,22 @@
     </form>
     <h2>Question List:</h2>
     <table>
-        <tr>
-            <th>Question nr.</th>
-            <th>Question</th>
-            <th>Actions</th>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td>
-                <a href="Update">Update</a>
-                <br>
-                <a href="Delete">Delete</a>
-            </td>
-        </tr>
+        {% for (question, questionNr, Quiz) in questionList %}
+            <tr>
+                <th>Question nr.</th>
+                <th>Question</th>
+                <th>Actions</th>
+            </tr>
+            <tr>
+                <td>{{ questionNr }}</td>
+                <td>{{ question }}</td>
+                <td>
+                    <a href=update>Update</a>
+                    <br>
+                    <a href=delete/question/{{ questionNr }}>Delete</a>
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 
 </section>

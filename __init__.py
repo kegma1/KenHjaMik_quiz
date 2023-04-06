@@ -141,7 +141,7 @@ class Question(Form):
 
     correctAnswer = RadioField('', choices=[('radio1', 'radio1'), ('radio2', 'radio2'), ('radio3', 'radio3'), ('radio4', 'radio4')], default = None)
 
-@app.route("/edit/quiz<int:id>")
+@app.route('/edit/quiz<int:id>', methods =['GET', 'POST'])
 def edit_quiz(id):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
@@ -157,8 +157,25 @@ def edit_quiz(id):
         conn.commit()
         return(url_for('edit_quiz'))
 
+    get_question_query = "SELECT Question, Question_ID, Quiz FROM `question` WHERE Quiz = %s"
+    questionid = [id]
+    cursor.execute(get_question_query, questionid)
+    questionList = cursor.fetchall()
 
-    return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID)
+    return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList)
+
+@app.route('/delete/question/<int:id>')
+def deleteQuestion(questionid):
+    id = [questionid]
+    delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
+    
+    cursor.execute(delQuery, id)
+    conn.commit()
+    return redirect(url_for('edit_quiz'))
+
+@app.route('/edit/quiz/question')
+def edit_question():
+    return render_template("MakeQuestion.html", title="Question editing")
 
 @app.route("/play")
 def play_list():
