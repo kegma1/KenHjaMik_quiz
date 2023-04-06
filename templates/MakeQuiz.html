@@ -2,6 +2,7 @@
 {% block body %}
 
 <section>
+    <a href="{{ url_for("edit_list")}}">Go back to quiz list</a><br> 
     <h1>Make questions: </h1>
     {% from "_form_helper.html" import render_field %}
     <form method="post">
