@@ -3,23 +3,29 @@
 
 <section>
     <h1>Make questions: </h1>
-    <form action=/edit/quiz{{ quizID }} method="POST">
-        <input type="text" name = 'Question' id="Question">
+    {% from "_form_helper.html" import render_field %}
+    <form method="post">
+        {{ render_field(form.question) }}
+        {{ render_field(form.answer1) }}
+        {{ render_field(form.answer2) }}
+        {{ render_field(form.answer3) }}
+        {{ render_field(form.answer4) }}
+        {{ render_field(form.correctAnswer) }}
         <input type="submit" value="add question">
     </form>
     <h2>Question List:</h2>
     <table>
+        <tr>
+            <th>Question nr.</th>
+            <th>Question</th>
+            <th>Actions</th>
+        </tr>
         {% for (question, questionNr, Quiz) in questionList %}
-            <tr>
-                <th>Question nr.</th>
-                <th>Question</th>
-                <th>Actions</th>
-            </tr>
             <tr>
                 <td>{{ questionNr }}</td>
                 <td>{{ question }}</td>
                 <td>
-                    <a href=update>Update</a>
+                    <a href=update>Maybe</a>
                     <br>
                     <a href=delete/question/{{ questionNr }}>Delete</a>
                 </td>

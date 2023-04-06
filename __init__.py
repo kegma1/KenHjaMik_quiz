@@ -103,34 +103,36 @@ class Quiz(Form):
 def edit_list():
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
-            return "access granted"
-        
-    form = Quiz(request.form)
-    if request.method == "POST" and form.validate():
-        name = form.quizName.data
-        theme = form.quizTheme.data
+            form = Quiz(request.form)
+            if request.method == "POST" and form.validate():
+                name = form.quizName.data
+                theme = form.quizTheme.data
 
-        creat_new_quiz_query = """INSERT INTO `quiz` (`Quiz_name`, `Quiz_description`) VALUES (%s, %s)"""
+                creat_new_quiz_query = """INSERT INTO `quiz` (`Quiz_name`, `Quiz_description`) VALUES (%s, %s)"""
 
-        args = (name, theme)
-        cursor.execute(creat_new_quiz_query, args)
-        conn.commit()
-        return redirect(url_for('edit_list'))
-    
-    get_quiz_query = "SELECT Quiz_name, Quiz_description, Quiz_ID, Total_questions FROM `quiz`"
-    cursor.execute(get_quiz_query)
-    quizList = cursor.fetchall()
-    
-    return render_template("QuizList.html", title="Quiz list", quizList = quizList)
+                args = (name, theme)
+                cursor.execute(creat_new_quiz_query, args)
+                conn.commit()
+                return redirect(url_for('edit_list'))
+            
+            get_quiz_query = "SELECT Quiz_name, Quiz_description, Quiz_ID, Total_questions FROM `quiz`"
+            cursor.execute(get_quiz_query)
+            quizList = cursor.fetchall()
+            
+            return render_template("QuizList.html", title="Quiz list", quizList = quizList)
+    return redirect(url_for("index"))
 
 @app.route('/delete/<int:id>')
 def delete(id):
-    id = [id]
-    delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
-    
-    cursor.execute(delQuery, id)
-    conn.commit()
-    return redirect(url_for('edit_list'))
+    if "is_admin" in session and "is_logged_in" in session:
+        if session["is_admin"] and session["is_logged_in"]:
+            id = [id]
+            delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
+            
+            cursor.execute(delQuery, id)
+            conn.commit()
+            return redirect(url_for('edit_list'))
+    return f'Fuck you'
 
 class Question(Form):
     question = StringField('Question', [validators.Length(min=1, max=25), validators.DataRequired()])
@@ -139,39 +141,48 @@ class Question(Form):
     answer3 = StringField('Answer3')
     answer4 = StringField('Answer4')
 
-    correctAnswer = RadioField('', choices=[('radio1', 'radio1'), ('radio2', 'radio2'), ('radio3', 'radio3'), ('radio4', 'radio4')], default = None)
+    correctAnswer = RadioField('', choices=[(1, 'Answer 1'), (2, 'Answer 2'), (3, 'Answer 3'), (4, 'Answer 4')], default = None)
 
 @app.route('/edit/quiz<int:id>', methods =['GET', 'POST'])
 def edit_quiz(id):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
-            return f"access granted"
-    quizID = id
-    form = Question(request.form)
-    if request.method == 'POST' and form.validate():
-        question = form.question.data
+            quizID = id
+            form = Question(request.form)
+            if request.method == 'POST' and form.validate():
+                question = form.question.data
+                answer1 = form.answer1.data
+                answer2 = form.answer2.data
+                answer3 = form.answer3.data
+                answer4 = form.answer4.data
 
-        creat_new_question = """INSERT INTO `question` (`Question`, `Quiz`) VALUES (%s, %s)"""
-        args = (question, id)
-        cursor.execute(creat_new_question, args)
-        conn.commit()
-        return(url_for('edit_quiz'))
+                correctAnswer = form.correctAnswer.data
 
-    get_question_query = "SELECT Question, Question_ID, Quiz FROM `question` WHERE Quiz = %s"
-    questionid = [id]
-    cursor.execute(get_question_query, questionid)
-    questionList = cursor.fetchall()
+                creat_new_question = """INSERT INTO `question` (`Question`, Answer1 , Answer2, Answer3, Answer4, Correct_answer, `Quiz`) VALUES (%s, %s, %s, %s, %s, %s , %s)"""
+                args = (question, answer1, answer2, answer3, answer4, correctAnswer, id)
+                cursor.execute(creat_new_question, args)
+                conn.commit()
+                return redirect(url_for('edit_quiz'))
+            
+            get_question_query = "SELECT Question, Question_ID, Quiz FROM `question` WHERE Quiz = %s"
+            questionid = [id]
+            cursor.execute(get_question_query, questionid)
+            questionList = cursor.fetchall()
 
-    return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList)
+            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList, form = form)
+    return redirect(url_for("index"))
 
 @app.route('/delete/question/<int:id>')
 def deleteQuestion(questionid):
-    id = [questionid]
-    delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
-    
-    cursor.execute(delQuery, id)
-    conn.commit()
-    return redirect(url_for('edit_quiz'))
+    if "is_admin" in session and "is_logged_in" in session:
+        if session["is_admin"] and session["is_logged_in"]:
+            id = [questionid]
+            delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
+            
+            cursor.execute(delQuery, id)
+            conn.commit()
+            return redirect(url_for('edit_quiz'))
+    return f'Fuck you'
 
 @app.route('/edit/quiz/question')
 def edit_question():
