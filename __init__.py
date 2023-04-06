@@ -94,8 +94,8 @@ def sign_up():
 
 
 class Quiz(Form):
-    quizName = StringField('Quiz_name', [validators.Length(min=1, max=25), validators.DataRequired()])
-    quizTheme = StringField('Quiz_description')
+    quizName = StringField('Quiz name', [validators.Length(min=1, max=25), validators.DataRequired()])
+    quizTheme = StringField('Quiz description')
 
     
 
@@ -119,7 +119,7 @@ def edit_list():
             cursor.execute(get_quiz_query)
             quizList = cursor.fetchall()
             
-            return render_template("QuizList.html", title="Quiz list", quizList = quizList)
+            return render_template("QuizList.html", title="Quiz list", quizList = quizList, form = form)
     return redirect(url_for("index"))
 
 @app.route('/delete/<int:id>')

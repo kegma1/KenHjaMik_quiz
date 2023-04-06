@@ -3,11 +3,10 @@
 <section>
     <a href="{{ url_for("index")}}">Back to login</a><br>
     <h1>Make a new quiz:</h1>
+    {% from "_form_helper.html" import render_field %}
     <form action=/edit method="POST">
-        <label for="quizName">Quiz  Name </label>
-        <input type="text" name = 'quizName' id="quizName"><br>
-        <label for="quizTheme">Quiz Theme</label>
-        <input type="text" name="quizTheme" id="quizTheme"><br>
+        {{ render_field(form.quizName) }}
+        {{ render_field(form.quizTheme) }}
         <input type="submit" value="add quiz">
     </form>
     <h2>Quiz List:</h2>
