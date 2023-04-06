@@ -127,8 +127,10 @@ def delete(id):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             id = [id]
+            delQuestionQuery = "DELETE FROM `question` WHERE Quiz = %s"
             delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
             
+            cursor.execute(delQuestionQuery, id)
             cursor.execute(delQuery, id)
             conn.commit()
             return redirect(url_for('edit_list'))
@@ -162,7 +164,8 @@ def edit_quiz(id):
                 args = (question, answer1, answer2, answer3, answer4, correctAnswer, id)
                 cursor.execute(creat_new_question, args)
                 conn.commit()
-                return redirect(url_for('edit_quiz'))
+                PlusCount(quizID)
+                return redirect(url_for('edit_quiz', id = id))
             
             get_question_query = "SELECT Question, Question_ID, Quiz FROM `question` WHERE Quiz = %s"
             questionid = [id]
@@ -172,16 +175,43 @@ def edit_quiz(id):
             return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList, form = form)
     return redirect(url_for("index"))
 
-@app.route('/delete/question/<int:id>')
-def deleteQuestion(questionid):
+def PlusCount(quizID):
+    get_question_query = "SELECT Total_questions FROM `quiz` WHERE Quiz_ID = %s"
+    args = [quizID]
+    cursor.execute(get_question_query, args)
+    (value,) = cursor.fetchone()
+    value += 1
+
+    update_question_query = "UPDATE `quiz` SET Total_questions = %s WHERE Quiz_ID = %s"
+    arg = (value, quizID)
+    cursor.execute(update_question_query, arg)
+    conn.commit()
+
+def MinusCount(quizID):
+    get_question_query = "SELECT Total_questions FROM `quiz` WHERE Quiz_ID = %s"
+    args = [quizID]
+    cursor.execute(get_question_query, args)
+    (value,) = cursor.fetchone()
+    value -= 1
+    
+
+    update_question_query = "UPDATE `quiz` SET Total_questions = %s WHERE Quiz_ID = %s"
+    arg = (value, quizID)
+    cursor.execute(update_question_query, arg)
+    conn.commit()
+
+@app.route('/edit/delete/question/<int:questionid>/<int:quizid>')
+def deleteQuestion(questionid, quizid):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
+
             id = [questionid]
             delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
             
             cursor.execute(delQuery, id)
             conn.commit()
-            return redirect(url_for('edit_quiz'))
+            MinusCount(quizid)
+            return redirect(url_for('edit_quiz', id = quizid))
     return f'Fuck you'
 
 @app.route('/edit/quiz/question')
