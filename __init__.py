@@ -181,7 +181,7 @@ def edit_question():
 def play_list():
     if "is_logged_in" in session:
         if session["is_logged_in"]:
-            return "access granted"
+            return render_template("play_list.html", title="All quizzes")
 
     return redirect(url_for("index"))
 
