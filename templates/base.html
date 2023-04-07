@@ -9,7 +9,16 @@
         <title>{{ title }}</title>
     </head>
     <body>
-        {% block body %}
-        {% endblock %}
+        {% if "username" in session %}
+            <a href="{{ url_for("score", user=session["username"]) }}" >
+                <section id="LeaderboardContainer">
+                    <p id="LeaderboardLink">score</p>
+                </section>
+            </a>
+        {% endif %}
+        <div id="ContentBody">
+            {% block body %}
+            {% endblock %}
+        </div>
     </body>
 </html>

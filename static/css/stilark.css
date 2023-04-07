@@ -1,11 +1,14 @@
 body {
-    display: flex;
-    justify-content: center;
     background-color: #2f2f2f;
     font-family: 'Roboto', sans-serif;
     color: whitesmoke;
     padding: 1vw;
     
+}
+
+#ContentBody {
+    display: flex;
+    justify-content: center;
 }
 
 a {
@@ -67,4 +70,22 @@ td {
 
 #MakeQuizContainer {
     display: flex;
+}
+
+
+#LeaderboardContainer {
+    position: fixed;
+    right: 1vw;
+    
+    color: whitesmoke;
+}
+
+#LeaderboardContainer:hover {
+    background-color: #777777;
+}
+
+#LeaderboardContainer > p {
+    font-size:x-large;
+    
+    margin: 1vi;
 }

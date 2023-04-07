@@ -97,7 +97,12 @@ class Quiz(Form):
     quizName = StringField('Quiz name', [validators.Length(min=1, max=25), validators.DataRequired()])
     quizTheme = StringField('Quiz description')
 
-    
+@app.route("/score/<user>")
+def score(user):
+    if "is_logged_in" in session and session["is_logged_in"]:
+        if "username" in session and session["username"] == user:
+            return "kult"
+    return redirect(url_for("index"))
 
 @app.route("/edit", methods = ["GET", "POST"])
 def edit_list():
