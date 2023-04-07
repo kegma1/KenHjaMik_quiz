@@ -6,12 +6,18 @@
     <h1>Make questions: </h1>
     {% from "_form_helper.html" import render_field %}
     <form method="post">
-        {{ render_field(form.question) }}
-        {{ render_field(form.answer1) }}
-        {{ render_field(form.answer2) }}
-        {{ render_field(form.answer3) }}
-        {{ render_field(form.answer4) }}
-        {{ render_field(form.correctAnswer) }}
+        <div id="MakeQuizContainer">
+            <div id="Questions">
+                {{ render_field(form.question) }}
+                {{ render_field(form.answer1) }}
+                {{ render_field(form.answer2) }}
+                {{ render_field(form.answer3) }}
+                {{ render_field(form.answer4) }}
+            </div>
+            <div id="QuestionsRadio">
+                {{ render_field(form.correctAnswer) }}
+            </div>
+        </div>
         <input type="submit" value="add question">
     </form>
     <h2>Question List:</h2>
