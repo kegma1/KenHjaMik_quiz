@@ -92,17 +92,25 @@ def sign_up():
 
     return render_template("sign_up.html", title="sign up", form=form)
 
-
-class Quiz(Form):
-    quizName = StringField('Quiz name', [validators.Length(min=1, max=25), validators.DataRequired()])
-    quizTheme = StringField('Quiz description')
-
 @app.route("/score/<user>")
 def score(user):
     if "is_logged_in" in session and session["is_logged_in"]:
         if "username" in session and session["username"] == user:
-            return "kult"
+            get_score_query = """
+                SELECT q.Quiz_name, qpt.Score,q.Total_questions FROM `quiz_playthrough` as qpt
+                INNER JOIN `user` as u ON qpt.User = u.User_ID
+                INNER JOIN `quiz` as q ON qpt.Quiz = q.Quiz_ID
+                WHERE u.Username = %s;
+            """
+            args = (user,)
+            cursor.execute(get_score_query, args)
+            scores = cursor.fetchall()
+            return render_template("score.html", title=f"{session['username']}'s score", is_score=1, scores=scores, username=user)
     return redirect(url_for("index"))
+
+class Quiz(Form):
+    quizName = StringField('Quiz name', [validators.Length(min=1, max=25), validators.DataRequired()])
+    quizTheme = StringField('Quiz description')
 
 @app.route("/edit", methods = ["GET", "POST"])
 def edit_list():

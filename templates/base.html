@@ -9,7 +9,7 @@
         <title>{{ title }}</title>
     </head>
     <body>
-        {% if "username" in session %}
+        {% if "username" in session and not is_score %}
             <a href="{{ url_for("score", user=session["username"]) }}" >
                 <section id="LeaderboardContainer">
                     <p id="LeaderboardLink">score</p>
