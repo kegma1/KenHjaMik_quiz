@@ -225,17 +225,15 @@ def edit_question():
 
 @app.route("/play")
 def play_list():
-    if "is_logged_in" in session:
-        if session["is_logged_in"]:
-            return render_template("play_list.html", title="All quizzes")
+    if "is_logged_in" in session and session["is_logged_in"]:
+        return render_template("play_list.html", title="All quizzes")
 
     return redirect(url_for("index"))
 
 @app.route("/play/<quiz>")
 def play_quiz(quiz):
-    if "is_logged_in" in session:
-        if session["is_logged_in"]:
-            return f"access granted {quiz}"
+    if "is_logged_in" in session and session["is_logged_in"]:
+        return f"access granted {quiz}"
 
     return redirect(url_for("index"))
 
