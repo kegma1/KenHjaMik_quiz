@@ -142,11 +142,11 @@ def delete(id):
     return f'Fuck you'
 
 class Question(Form):
-    question = StringField('Question', [validators.Length(min=1, max=25), validators.DataRequired()])
-    answer1 = StringField('Answer1')
-    answer2 = StringField('Answer2')
-    answer3 = StringField('Answer3')
-    answer4 = StringField('Answer4')
+    question = StringField('Question', [validators.Length(min=1, max=100), validators.DataRequired()])
+    answer1 = StringField('Answer1', [validators.Length(min=1, max=45), validators.DataRequired()])
+    answer2 = StringField('Answer2', [validators.Length(min=1, max=45), validators.DataRequired()])
+    answer3 = StringField('Answer3', [validators.Length(min=1, max=45), validators.DataRequired()])
+    answer4 = StringField('Answer4', [validators.Length(min=1, max=45), validators.DataRequired()])
 
     correctAnswer = RadioField('', choices=[(1, 'Answer 1'), (2, 'Answer 2'), (3, 'Answer 3'), (4, 'Answer 4')], default = None)
 
