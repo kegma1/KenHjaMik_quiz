@@ -185,8 +185,6 @@ def edit_quiz(id):
             cursor.execute(get_question_query, questionid)
             questionList = cursor.fetchall()
             
-            print(questionList(question))
-            
             for i in range(len(questionList)):
                 print(questionList[i])
                 
