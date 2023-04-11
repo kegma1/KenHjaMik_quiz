@@ -190,7 +190,7 @@ def edit_quiz(id):
             for i in range(len(questionList)):
                 print(questionList[i])
                 
-            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, question_nr = num_of_quest, questionList = questionList, form = form)
+            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList, form = form)
     return redirect(url_for("index"))
 
 def PlusCount(quizID):
