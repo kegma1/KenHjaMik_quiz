@@ -27,14 +27,14 @@
             <th>Question</th>
             <th>Actions</th>
         </tr>
-        {% for (question, questionNr, Quiz) in questionList %}
+        {% for i in range(quiz_len) %}
             <tr>
-                <td>{{ questionNr }}</td>
-                <td>{{ question }}</td>
+                <td>{{ questionList[i][1] }}</td>
+                <td>{{ questionList[i][0] }}</td>
                 <td>
                     <a href=update>Maybe</a>
                     <br>
-                    <a href=delete/question/{{ questionNr }}/{{ Quiz }}>Delete</a>
+                    <a href=delete/question/{{ questionList[i][1] }}/{{ questionList[0][2] }}>Delete</a>
                 </td>
             </tr>
         {% endfor %}
