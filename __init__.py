@@ -235,9 +235,9 @@ def edit_question():
 def play_list():
     if "is_logged_in" in session and session["is_logged_in"]:
         cursor.execute("SELECT * FROM `quiz`")
-        allQuizzes = cursor.fetchall()
+        all_quizzes = cursor.fetchall()
         
-        print(allQuizzes)
+        print(all_quizzes)
         return render_template("play_list.html", title="All quizzes")
 
     return redirect(url_for("index"))
