@@ -231,9 +231,13 @@ def deleteQuestion(questionid, quizid):
 def edit_question():
     return render_template("MakeQuestion.html", title="Question editing")
 
-@app.route("/play")
+@app.route("/play", methods=["POST", "GET"])
 def play_list():
     if "is_logged_in" in session and session["is_logged_in"]:
+        cursor.execute("SELECT * FROM `quiz`")
+        all_quiz = cursor.fetchall()
+        
+        print(all_quiz)
         return render_template("play_list.html", title="All quizzes")
 
     return redirect(url_for("index"))
