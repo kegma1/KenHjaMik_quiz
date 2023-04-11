@@ -184,10 +184,10 @@ def edit_quiz(id):
             questionid = [id]
             cursor.execute(get_question_query, questionid)
             questionList = cursor.fetchall()
-            qList_length = len(questionList)
-            print(qList_length)
 
-            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList, qList_length = qList_length, form = form)
+            count_questions = 0
+
+            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, questionList = questionList, count = count_questions, form = form)
     return redirect(url_for("index"))
 
 def PlusCount(quizID):
