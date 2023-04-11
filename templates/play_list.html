@@ -1,7 +1,22 @@
 {% extends "base.html" %}
 {% block body %}
     <section>
-        <h1> swag </h1>
+        <table>
+            <tr>
+                <th>Title:</th>
+                <th>Desc:</th>
+                <th>Questions:</th>
+            </tr>
+
+            {% for i in range(a_q_len)%}
+                <tr>
+                    <td>{{ all_quizzes[i][1] }}</td>
+                    <td>{{ all_quizzes[i][2] }}</td>
+                    <td>{{ all_quizzes[i][3] }}</td>
+                    <td><a href="play/{{all_quizzes[i][1]}}">PLAY</a></td>
+                </tr>
+            {% endfor %}
+        </table>
     </section>
 
 {% endblock %}

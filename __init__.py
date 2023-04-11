@@ -236,11 +236,12 @@ def edit_question():
 @app.route("/play", methods=["POST", "GET"])
 def play_list():
     if "is_logged_in" in session and session["is_logged_in"]:
+
         cursor.execute("SELECT * FROM `quiz`")
         all_quizzes = cursor.fetchall()
-        
-        print(all_quizzes)
-        return render_template("play_list.html", title="All quizzes")
+        all_quizzes_len = len(all_quizzes)
+
+        return render_template("play_list.html", title="All quizzes", all_quizzes = all_quizzes, a_q_len = all_quizzes_len)
 
     return redirect(url_for("index"))
 
