@@ -248,10 +248,14 @@ def play_list():
 @app.route("/play/<quiz>")
 def play_quiz(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
-        return f"access granted {quiz}"
+        
+        get_quiz_query = "SELECT * FROM `quiz` RIGHT JOIN `question` ON Quiz_ID = Quiz WHERE Quiz_ID = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_name = %s)"
+        cursor.execute(get_quiz_query, (quiz,))
+        get_quiz = cursor.fetchall()
+        
+        return render_template("play_quiz.html", title=f'Playing: {quiz}', temp = get_quiz)
 
     return redirect(url_for("index"))
-
 
 if __name__ == "__main__":
     app.run()
