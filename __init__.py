@@ -250,14 +250,15 @@ def play_list():
 class Options(Form):
     options = RadioField('', choices=[(1, 'Option 1'), (2, 'Option 2'), (3, 'Option 3'), (4, 'Option 4')], default = None)
 
-@app.route("/play/<quiz>")
+@app.route("/play/<quiz>", methods=["POST", "GET"])
 def play_quiz(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
-        
         form = Options(request.form)
-        
+         
         if request.method == 'POST' and form.validate():
-            pass
+            all_answers = form.options.data
+            print(all_answers)
+        
         get_quiz_query = '''
         SELECT Quiz, Question, Question_ID, Answer1, Answer2, Answer3, Answer4, Correct_answer FROM `quiz`
         INNER JOIN `question` ON Quiz_ID = Quiz 
@@ -265,10 +266,7 @@ def play_quiz(quiz):
         '''
         cursor.execute(get_quiz_query, (quiz,))
         get_quiz = cursor.fetchall()
-        print(get_quiz)
-        
         quiz_len = len(get_quiz)
-        print(quiz_len)
         
         return render_template("play_quiz.html", title=f'Playing: {quiz}', player_quiz = get_quiz, quiz_len = quiz_len, form = form)
 
