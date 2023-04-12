@@ -256,21 +256,69 @@ def play_quiz(quiz):
         form = Options(request.form)
          
         if request.method == 'POST' and form.validate():
-            all_answers = form.options.data
-            print(all_answers)
-        
-        get_quiz_query = '''
-        SELECT Quiz, Question, Question_ID, Answer1, Answer2, Answer3, Answer4, Correct_answer FROM `quiz`
-        INNER JOIN `question` ON Quiz_ID = Quiz 
-        WHERE Quiz = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_name = %s)
-        '''
-        cursor.execute(get_quiz_query, (quiz,))
-        get_quiz = cursor.fetchall()
-        quiz_len = len(get_quiz)
-        
-        return render_template("play_quiz.html", title=f'Playing: {quiz}', player_quiz = get_quiz, quiz_len = quiz_len, form = form)
+            answer = form.options.data
+            
+            if int(answer) == int(session["curr_question"][7]):
+                session["correct_ans"] += 1
+            
+            return redirect(url_for("play_next", quiz = quiz))
+            
+        return render_template("play_quiz.html", title=f'Playing: {session["quiz_name"]}', player_quiz = session["curr_question"], form = form)
 
     return redirect(url_for("index"))
 
+@app.route("/play/<quiz>/get")
+def play_get(quiz):
+    if "is_logged_in" in session and session["is_logged_in"]:
+        
+        get_quiz_query = '''
+        SELECT Quiz, Question, Question_ID, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz_name FROM `quiz`
+        INNER JOIN `question` ON Quiz_ID = Quiz 
+        WHERE Quiz = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_ID = %s)
+        '''
+        
+        cursor.execute(get_quiz_query, (quiz,))
+        get_quiz = cursor.fetchall()
+        
+        session["curr_quiz"] = get_quiz[1::]
+        session["curr_question"] = get_quiz[0]
+        session["correct_ans"] = 0
+        session["quiz_name"] = get_quiz[0][8]
+        
+        print(session["curr_quiz"])
+        print(session["curr_question"])
+            
+        return redirect(url_for('play_quiz', quiz = quiz))
+
+    return redirect(url_for("index"))
+
+@app.route("/play/<quiz>/next")
+def play_next(quiz):
+    if "is_logged_in" in session and session["is_logged_in"]:
+
+        try:
+            session["curr_question"] = session["curr_quiz"][0]
+            session["curr_quiz"] = session["curr_quiz"][1::]
+        except:
+            get_user_ID = "SELECT User_ID FROM `user` WHERE Username = %s"
+            user = session["username"]
+            cursor.execute(get_user_ID, (user,))
+            
+            (user_ID,) = cursor.fetchone()
+            quiz_ID = quiz
+            score = session["correct_ans"]
+            
+            quiz_playthrough_set = '''INSERT INTO `quiz_playthrough` (User, Quiz, Score) VALUES (%s, %s, %s)'''
+            cursor.execute(quiz_playthrough_set, (user_ID, quiz_ID, score))
+            conn.commit()
+            
+            session["correct_ans"] = -1
+            
+            return redirect(url_for('play_list'))
+            
+        return redirect(url_for('play_quiz', quiz = quiz))
+
+    return redirect(url_for("index"))
+    
 if __name__ == "__main__":
     app.run()

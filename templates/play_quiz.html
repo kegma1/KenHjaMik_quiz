@@ -9,35 +9,24 @@
                 <th>Option 2:</th>
                 <th>Option 3:</th>
                 <th>Option 4:</th>
-                <th>Your answer:</th>
             </tr>
             {% from "_form_helper.html" import render_field %}
-            {% for i in range(quiz_len)%}
                 <tr>
-                    <td><h2>{{player_quiz[i][1]}}</h2></td> <!-- Question -->
+                    <td style="border-color: transparent;"><h2>{{player_quiz[1]}}</h2></td> <!-- Question -->
                     <td style="border-color: transparent; font-size: 2.5vw;">:  </td>
-                    <td>{{player_quiz[i][3]}}</td> <!-- Answer 1 -->
-                    <td>{{player_quiz[i][4]}}</td> <!-- Answer 2 -->
-                    <td>{{player_quiz[i][5]}}</td> <!-- Answer 3 -->
-                    <td>{{player_quiz[i][6]}}</td> <!-- Answer 4 -->
-                    <td>
-                        <form method="POST">
-                            {{ render_field(form.options) }}
-                        </form>
-                    </td>
+                    <td>{{player_quiz[3]}}</td> <!-- Answer 1 -->
+                    <td>{{player_quiz[4]}}</td> <!-- Answer 2 -->
+                    <td>{{player_quiz[5]}}</td> <!-- Answer 3 -->
+                    <td>{{player_quiz[6]}}</td> <!-- Answer 4 -->
                 </tr>
                 <tr>
                     <td style="border-color: transparent; height: 20px;"></td>
                 </tr>
-            {% endfor %}
-            <tr>
-                <td style="border-color: transparent;">
-                    <form method="POST">
-                        <input type="submit" value="Submit">
-                    </form>
-                </td>
-            </tr>
         </table>
+    <form method="POST">
+        <div id="render_div">{{ render_field(form.options) }}</div>
+        <input type="submit" value="Next">  
+    </form>
     </section>
 
 {% endblock %}

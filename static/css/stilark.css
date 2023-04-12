@@ -84,6 +84,38 @@ td {
     text-align: center;
 }
 
+input[type="Submit"] {
+    font-size: 1rem;
+    color: whitesmoke;
+    text-decoration: underline;
+    background-color: #2f2f2f;
+	border: none;
+	padding: 5px;
+    border-radius: 5px;
+
+	cursor: pointer;
+	outline: inherit;
+}
+
+input[type="Submit"]:hover {
+    background-color: #777777;
+}
+
+input[type="text"], input[type="password"] {
+    border: none;
+    background-color: #2f2f2f;
+    color: whitesmoke;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#render_div > dd > ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    position: relative;
+}
+
 #MakeQuizContainer {
     display: flex;
 }
