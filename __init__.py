@@ -141,9 +141,11 @@ def delete(id):
         if session["is_admin"] and session["is_logged_in"]:
             id = [id]
             delQuestionQuery = "DELETE FROM `question` WHERE Quiz = %s"
+            delScoreQuery = "DELETE FROM `quiz_playthrough` WHERE Quiz = %s"
             delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
             
             cursor.execute(delQuestionQuery, id)
+            cursor.execute(delScoreQuery, id)
             cursor.execute(delQuery, id)
             conn.commit()
             return redirect(url_for('edit_list'))
