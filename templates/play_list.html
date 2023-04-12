@@ -15,8 +15,10 @@
                     <td>{{ all_quizzes[i][3] }}</td>
                     <td><a href="play/{{all_quizzes[i][1]}}">PLAY</a></td>
                 </tr>
+                
             {% endfor %}
         </table>
+        <br><a href="{{ url_for("index")}}">HOME</a>
     </section>
 
 {% endblock %}
