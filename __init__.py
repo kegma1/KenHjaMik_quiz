@@ -245,15 +245,30 @@ def play_list():
 
     return redirect(url_for("index"))
 
+class Options(Form):
+    options = RadioField('', choices=[(1, 'Option 1'), (2, 'Option 2'), (3, 'Option 3'), (4, 'Option 4')], default = None)
+
 @app.route("/play/<quiz>")
 def play_quiz(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
         
-        get_quiz_query = "SELECT * FROM `quiz` RIGHT JOIN `question` ON Quiz_ID = Quiz WHERE Quiz_ID = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_name = %s)"
+        form = Options(request.form)
+        
+        if request.method == 'POST' and form.validate():
+            pass
+        get_quiz_query = '''
+        SELECT Quiz, Question, Question_ID, Answer1, Answer2, Answer3, Answer4, Correct_answer FROM `quiz`
+        INNER JOIN `question` ON Quiz_ID = Quiz 
+        WHERE Quiz = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_name = %s)
+        '''
         cursor.execute(get_quiz_query, (quiz,))
         get_quiz = cursor.fetchall()
+        print(get_quiz)
         
-        return render_template("play_quiz.html", title=f'Playing: {quiz}', temp = get_quiz)
+        quiz_len = len(get_quiz)
+        print(quiz_len)
+        
+        return render_template("play_quiz.html", title=f'Playing: {quiz}', player_quiz = get_quiz, quiz_len = quiz_len, form = form)
 
     return redirect(url_for("index"))
 
