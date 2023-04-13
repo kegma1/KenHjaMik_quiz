@@ -249,18 +249,33 @@ def configure_quiz(quizid):
         conn.commit()
     return redirect(url_for("edit_quiz", id = quizid))
 
-@app.route('/edit/quiz<int:quizid>/question<int:questionid>')
+@app.route('/edit/quiz<int:quizid>/question<int:questionid>', methods = ['GET', 'POST'])
 def edit_question(quizid, questionid):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
+            form = Question(request.form)
+            if request.method == "post" and form.validate():
+                question = form.question.data
+                answer1 = form.answer1.data
+                answer2 = form.answer2.data
+                answer3 = form.answer3.data
+                answer4 = form.answer4.data
+                print("yes")
+
+                correctAnswer = form.correctAnswer.data
+
+                creat_new_question = "UPDATE `question` SET Question = %s, Answer1 = %s, Answer2 = %s, Answer3 = %s, Answer4 = %s, Correct_answer = %s WHERE Question_ID = %s"
+                args = (question, answer1, answer2, answer3, answer4, correctAnswer, questionid)
+                print(args)
+                cursor.execute(creat_new_question, args)
+                conn.commit() 
+                return redirect(url_for("edit_quiz", quizid = quizid))
 
             creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz FROM `question` WHERE Question_ID = %s"
             arg = [questionid]
             cursor.execute(creat_question_query, arg)
             questionInfo = cursor.fetchall()
-            return render_template("MakeQuestion.html", title="Question editing", info = questionInfo)
-        
-
+            return render_template("MakeQuestion.html", title="Question editing", info = questionInfo, questionID = questionid)
     return redirect(url_for("index"))
 
 @app.route("/play", methods=["POST", "GET"])
