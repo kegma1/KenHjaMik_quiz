@@ -187,7 +187,7 @@ def edit_quiz(id):
             cursor.execute(get_question_query, questionid)
             questionList = cursor.fetchall()
 
-            get_quiz_theme_query = "SELECT Quiz_name, Quiz_description FROM `quiz` WHERE Quiz_ID = %s"
+            get_quiz_theme_query = "SELECT Quiz_name, Quiz_description, Quiz_ID FROM `quiz` WHERE Quiz_ID = %s"
             cursor.execute(get_quiz_theme_query, questionid)
             quizInfo = cursor.fetchall()
 
