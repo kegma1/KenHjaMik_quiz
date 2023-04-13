@@ -332,9 +332,6 @@ def play_get(quiz):
         session["curr_question"] = get_quiz[0]
         session["correct_ans"] = 0
         session["quiz_name"] = get_quiz[0][8]
-        
-        print(session["curr_quiz"])
-        print(session["curr_question"])
             
         return redirect(url_for('play_quiz', quiz = quiz))
 
@@ -362,11 +359,10 @@ def play_next(quiz):
             quiz_playthrough_set = '''INSERT INTO `quiz_playthrough` (User, Quiz, Score) VALUES (%s, %s, %s)'''
             cursor.execute(quiz_playthrough_set, (user_ID, quiz_ID, score))
             conn.commit()
-            print(session)
+            
             del session["correct_ans"]
             del session["curr_question"]
             del session["curr_quiz"]
-            print(session)
             
             return redirect(url_for('play_list'))
             
