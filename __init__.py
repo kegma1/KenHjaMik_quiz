@@ -261,16 +261,15 @@ def edit_question(quizid, questionid):
                 answer2 = form.answer2.data
                 answer3 = form.answer3.data
                 answer4 = form.answer4.data
-                print("yes")
-
+                
                 correctAnswer = form.correctAnswer.data
 
                 creat_new_question = "UPDATE `question` SET Question = %s, Answer1 = %s, Answer2 = %s, Answer3 = %s, Answer4 = %s, Correct_answer = %s WHERE Question_ID = %s"
                 args = (question, answer1, answer2, answer3, answer4, correctAnswer, questionid)
-                print(args)
+                
                 cursor.execute(creat_new_question, args)
                 conn.commit() 
-                return redirect(url_for("edit_quiz", quizid = quizid))
+                return redirect(url_for("edit_quiz", id = quizid))
 
             creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz FROM `question` WHERE Question_ID = %s"
             arg = [questionid]

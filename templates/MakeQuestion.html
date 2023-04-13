@@ -11,7 +11,6 @@
     <form method="post" action={{ url_for("edit_question", quizid = info[6], questionid = questionID)}}>
         
         {{ form.question(value=info[0])|safe }}
-        <!-- <input type="text" id="question" name="question" value="{{ info[0] }}"> -->
         <table>
             <tr>
                 <th>Nr.</th>
@@ -46,24 +45,6 @@
                     {{ render_radio(form.correctAnswer, '3', info[5]) }}
                 </td>
             </tr>
-
-            <!-- {% for x in [1, 2, 3, 4] %}
-            <tr>
-                <td>
-                    {{ x }}
-                </td>
-                <td>
-                    <input type="text" id="answer{{ x }}" name="answer{{ x }}" value="{{ info[x] }}">
-                </td>
-                <td>
-                    {% if x == info[5] %}
-                    <input type="radio" id="{{ x }}" name="radio" value="{{ x }}" checked="checked">
-                    {% else %}
-                    <input type="radio" id="{{ x }}" name="radio" value="{{ x }}">
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %} -->
         </table>
         <input type="submit">
     </form>
