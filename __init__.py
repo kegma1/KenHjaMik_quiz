@@ -254,7 +254,6 @@ def edit_question(quizid, questionid):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             form = Question(request.form)
-            print(form.correctAnswer.choices)
             if request.method == "post" and form.validate():
                 question = form.question.data
                 answer1 = form.answer1.data
@@ -275,7 +274,8 @@ def edit_question(quizid, questionid):
             creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz FROM `question` WHERE Question_ID = %s"
             arg = [questionid]
             cursor.execute(creat_question_query, arg)
-            questionInfo = cursor.fetchall()
+            questionInfo = cursor.fetchone()
+            form.correctAnswer.default = questionInfo[5]
             return render_template("MakeQuestion.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
     return redirect(url_for("index"))
 

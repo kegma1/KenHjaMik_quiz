@@ -2,16 +2,16 @@
 {% block body %}
 
 <section>
-    <a href="{{ url_for("edit_quiz", id = info[0][6])}}">Back to question list</a><br>
+    <a href="{{ url_for("edit_quiz", id = info[6])}}">Back to question list</a><br>
     <h1>
         Question:
     </h1>
     
     
-    <form method="post" action={{ url_for("edit_question", quizid = info[0][6], questionid = questionID)}}>
+    <form method="post" action={{ url_for("edit_question", quizid = info[6], questionid = questionID)}}>
         
-        {{ form.question(value=info[0][0])|safe }}
-        <!-- <input type="text" id="question" name="question" value="{{ info[0][0] }}"> -->
+        {{ form.question(value=info[0])|safe }}
+        <!-- <input type="text" id="question" name="question" value="{{ info[0] }}"> -->
         <table>
             <tr>
                 <th>Nr.</th>
@@ -20,23 +20,31 @@
             </tr>
             <tr>
                 <td>1</td>
-                <td>{{ form.answer1(value=info[0][1])|safe }}</td>
-                <td>idk radiobutons går hær</td>
+                <td>{{ form.answer1(value=info[1])|safe }}</td>
+                <td>
+                    {{ render_radio(form.correctAnswer, '0', info[5]) }}
+                </td>
             </tr>
             <tr>
                 <td>2</td>
-                <td>{{ form.answer2(value=info[0][2])|safe }}</td>
-                <td>idk radiobutons går hær</td>
+                <td>{{ form.answer2(value=info[2])|safe }}</td>
+                <td>
+                    {{ render_radio(form.correctAnswer, '1', info[5]) }}
+                </td>
             </tr>
             <tr>
                 <td>3</td>
-                <td>{{ form.answer3(value=info[0][3])|safe }}</td>
-                <td>idk radiobutons går hær</td>
+                <td>{{ form.answer3(value=info[3])|safe }}</td>
+                <td>
+                    {{ render_radio(form.correctAnswer, '2', info[5]) }}
+                </td>
             </tr>
             <tr>
                 <td>4</td>
-                <td>{{ form.answer4(value=info[0][4])|safe }}</td>
-                <td>idk radiobutons går hær</td>
+                <td>{{ form.answer4(value=info[4])|safe }}</td>
+                <td>
+                    {{ render_radio(form.correctAnswer, '3', info[5]) }}
+                </td>
             </tr>
 
             <!-- {% for x in [1, 2, 3, 4] %}
@@ -45,10 +53,10 @@
                     {{ x }}
                 </td>
                 <td>
-                    <input type="text" id="answer{{ x }}" name="answer{{ x }}" value="{{ info[0][x] }}">
+                    <input type="text" id="answer{{ x }}" name="answer{{ x }}" value="{{ info[x] }}">
                 </td>
                 <td>
-                    {% if x == info[0][5] %}
+                    {% if x == info[5] %}
                     <input type="radio" id="{{ x }}" name="radio" value="{{ x }}" checked="checked">
                     {% else %}
                     <input type="radio" id="{{ x }}" name="radio" value="{{ x }}">
@@ -62,3 +70,15 @@
 </section>
 
 {% endblock %}
+
+{% macro render_radio(correctAnswer, num, checked) %}
+    {% for subfield in correctAnswer if subfield.id.endswith(num)%}
+
+
+        {% if subfield.data == checked|int %}
+            {{ subfield(checked="checked")|safe }}
+        {% else %}
+            {{ subfield|safe }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
