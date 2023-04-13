@@ -3,7 +3,7 @@
 
 <section>
     <a href="{{ url_for("edit_list")}}">Go back to quiz list</a><br> 
-    <form method="post" action={{ url_for("configure_quiz", quizid = questionList[0][2])}} >
+    <form method="post" action={{ url_for("configure_quiz", quizid = quizInfo[0][2])}} >
         <h2>Quiz</h2>
         <input type="text" id="quizName" name="quizName" value="{{ quizInfo[0][0] }}">
         <h2>Theme</h2>
