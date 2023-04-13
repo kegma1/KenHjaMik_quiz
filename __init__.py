@@ -187,9 +187,13 @@ def edit_quiz(id):
             cursor.execute(get_question_query, questionid)
             questionList = cursor.fetchall()
 
+            get_quiz_theme_query = "SELECT Quiz_name, Quiz_description FROM `quiz` WHERE Quiz_ID = %s"
+            cursor.execute(get_quiz_theme_query, questionid)
+            quizInfo = cursor.fetchall()
+
             quiz_len = len(questionList)
                 
-            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form)
+            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
     return redirect(url_for("index"))
 
 def PlusCount(quizID):
@@ -231,12 +235,26 @@ def deleteQuestion(questionid, quizid):
             return redirect(url_for('edit_quiz', id = quizid))
     return f'Fuck you'
 
+@app.route('/edit/update<int:quizid>', methods = ["GET", "POST"])
+def configure_quiz(quizid):
+    form = Quiz(request.form)
+    if request.method == "POST" and form.validate():
+        name = form.quizName.data
+        theme = form.quizTheme.data
+
+        creat_new_quiz_query = "UPDATE `quiz` SET Quiz_name = %s, Quiz_description = %s WHERE Quiz_ID = %s"
+
+        args = (name, theme, quizid)
+        cursor.execute(creat_new_quiz_query, args)
+        conn.commit()
+    return redirect(url_for("edit_quiz", id = quizid))
+
 @app.route('/edit/quiz<int:quizid>/question<int:questionid>')
 def edit_question(quizid, questionid):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
 
-            creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer FROM `question` WHERE Question_ID = %s"
+            creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz FROM `question` WHERE Question_ID = %s"
             arg = [questionid]
             cursor.execute(creat_question_query, arg)
             questionInfo = cursor.fetchall()

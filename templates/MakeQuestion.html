@@ -6,59 +6,60 @@
         Question:
     </h1>
     
-    <input type="text" id="question" name="question" value={{ info[0][0] }}>
-
-    <table>
-        <tr>
-            <th>Nr.</th>
-            <th>Answers</th>
-            <th>Check Correct</th>
-        </tr>
-        <tr>
-            <td>
-                1
-            </td>
-            <td>
-                <input type="text" id="Answer1" name="Answer1">
-            </td>
-            <td>
-                <input type="checkbox" id="checkbox1" name="checkbox1">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                2
-            </td>
-            <td>
-                <input type="text" id="Answer2" name="Answer2">
-            </td>
-            <td>
-                <input type="checkbox" id="checkbox2" name="checkbox2">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                3
-            </td>
-            <td>
-                <input type="text" id="Answer3" name="Answer3">
-            </td>
-            <td>
-                <input type="checkbox" id="checkbox3" name="checkbox3">
-            </td>
-        </tr>
-        <tr>
-            <td>
-                4
-            </td>
-            <td>
-                <input type="text" id="Answer4" name="Answer4">
-            </td>
-            <td>
-                <input type="checkbox" id="checkbox4" name="checkbox4">
-            </td>
-        </tr>
-    </table>
+    <input type="text" id="question" name="question" value="{{ info[0][0] }}">
+    <form action="post">
+        <table>
+            <tr>
+                <th>Nr.</th>
+                <th>Answers</th>
+                <th>Check Correct</th>
+            </tr>
+            <tr>
+                <td>
+                    1
+                </td>
+                <td>
+                    <input type="text" id="Answer1" name="Answer1" value="{{ info[0][1] }}">
+                </td>
+                <td>
+                    <input type="radio" id="radio" name="radio" value=1>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    2
+                </td>
+                <td>
+                    <input type="text" id="Answer2" name="Answer2" value="{{ info[0][2] }}">
+                </td>
+                <td>
+                    <input type="radio" id="radio" name="radio" value=2>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    3
+                </td>
+                <td>
+                    <input type="text" id="Answer3" name="Answer3" value="{{ info[0][3] }}">
+                </td>
+                <td>
+                    <input type="radio" id="radio" name="radio" value=3>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    4
+                </td>
+                <td>
+                    <input type="text" id="Answer4" name="Answer4" value="{{ info[0][4] }}">
+                </td>
+                <td>
+                    <input type="radio" id="radio" name="radio" value=4>
+                </td>
+            </tr>
+        </table>
+    </form>
 </section>
 
 {% endblock %}
