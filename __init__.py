@@ -253,6 +253,11 @@ class Options(Form):
 @app.route("/play/<quiz>", methods=["POST", "GET"])
 def play_quiz(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
+
+        if not ("curr_question" in session and "curr_quiz" in session):
+            return redirect(url_for("play_list"))
+
+
         form = Options(request.form)
          
         if request.method == 'POST' and form.validate():
@@ -296,6 +301,9 @@ def play_get(quiz):
 def play_next(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
 
+        if not ("curr_question" in session and "curr_quiz" in session):
+            return redirect(url_for("play_list"))
+        
         try:
             session["curr_question"] = session["curr_quiz"][0]
             session["curr_quiz"] = session["curr_quiz"][1::]
@@ -311,8 +319,11 @@ def play_next(quiz):
             quiz_playthrough_set = '''INSERT INTO `quiz_playthrough` (User, Quiz, Score) VALUES (%s, %s, %s)'''
             cursor.execute(quiz_playthrough_set, (user_ID, quiz_ID, score))
             conn.commit()
-            
-            session["correct_ans"] = -1
+            print(session)
+            del session["correct_ans"]
+            del session["curr_question"]
+            del session["curr_quiz"]
+            print(session)
             
             return redirect(url_for('play_list'))
             
