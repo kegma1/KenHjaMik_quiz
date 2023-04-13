@@ -231,9 +231,19 @@ def deleteQuestion(questionid, quizid):
             return redirect(url_for('edit_quiz', id = quizid))
     return f'Fuck you'
 
-@app.route('/edit/quiz/question')
-def edit_question():
-    return render_template("MakeQuestion.html", title="Question editing")
+@app.route('/edit/quiz<int:quizid>/question<int:questionid>')
+def edit_question(quizid, questionid):
+    if "is_admin" in session and "is_logged_in" in session:
+        if session["is_admin"] and session["is_logged_in"]:
+
+            creat_question_query = "SELECT Question, Answer1, Answer2, Answer3, Answer4, Correct_answer FROM `question` WHERE Question_ID = %s"
+            arg = [questionid]
+            cursor.execute(creat_question_query, arg)
+            questionInfo = cursor.fetchall()
+            return render_template("MakeQuestion.html", title="Question editing", info = questionInfo)
+        
+
+    return redirect(url_for("index"))
 
 @app.route("/play", methods=["POST", "GET"])
 def play_list():

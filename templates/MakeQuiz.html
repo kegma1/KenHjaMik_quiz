@@ -32,7 +32,7 @@
                 <td>{{ i+1 }}</td>
                 <td>{{ questionList[i][0] }}</td>
                 <td>
-                    <a href=update>Maybe</a>
+                    <a href=/edit/quiz{{ questionList[0][2]}}/question{{ questionList[i][1] }}>Edit</a>
                     <br>
                     <a href=delete/question/{{ questionList[i][1] }}/{{ questionList[0][2] }}>Delete</a>
                 </td>
