@@ -254,7 +254,8 @@ def edit_question(quizid, questionid):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             form = Question(request.form)
-            if request.method == "post" and form.validate():
+
+            if request.method == "POST" and form.validate():
                 question = form.question.data
                 answer1 = form.answer1.data
                 answer2 = form.answer2.data
