@@ -4,7 +4,7 @@
     <a href="{{ url_for("index")}}">Back to login</a><br>
     <h1>Make a new quiz:</h1>
     {% from "_form_helper.html" import render_field %}
-    <form action=/edit method="POST">
+    <form method="POST">
         {{ render_field(form.quizName) }}
         {{ render_field(form.quizTheme) }}
         <input type="submit" value="add quiz">
@@ -25,9 +25,9 @@
                 <td>{{ desc }}</td>
                 <td>{{ questions }}</td>
                 <td>
-                    <a href=/edit/quiz{{ nr }}>Edit</a>
+                    <a href="{{ url_for("edit_quiz", id=nr) }}">Edit</a>
                     <br>
-                    <a href=/delete/{{ nr }}>Delete</a>
+                    <a href="{{ url_for("delete", id=nr) }}">Delete</a>
                 </td>
             </tr>
         {% endfor %}

@@ -39,9 +39,9 @@
                 <td>{{ i+1 }}</td>
                 <td>{{ questionList[i][0] }}</td>
                 <td>
-                    <a href=/edit/quiz{{ questionList[0][2]}}/question{{ questionList[i][1] }}>Edit</a>
+                    <a href="{{ url_for("edit_question", quizid=questionList[0][2], questionid=questionList[i][1]) }}">Edit</a>
                     <br>
-                    <a href=delete/question/{{ questionList[i][1] }}/{{ questionList[0][2] }}>Delete</a>
+                    <a href="{{ url_for("deleteQuestion", quizid=questionList[0][2], questionid=questionList[i][1]) }}">Delete</a>
                 </td>
             </tr>
         {% endfor %}
