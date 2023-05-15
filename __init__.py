@@ -290,14 +290,13 @@ def play_list():
 def play_quiz(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
 
-        if not ("curr_question" in session and "curr_quiz" in session):
+        if not ("questions" in session and "curr_question" in session):
             return redirect(url_for("play_list"))
          
         if request.method == 'POST':
-                        
-            return redirect(url_for("play_next", quiz = quiz))
+            return redirect(url_for("next_question", quiz = quiz))
             
-        return render_template("play_quiz.html", title=f'Playing: {session["quiz_name"]}', player_quiz = session["curr_question"])
+        return render_template("play_quiz.html", title='Playing', question=session["curr_question"][1])
 
     return redirect(url_for("index"))
 
@@ -306,19 +305,15 @@ def get_question(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
         
         get_quiz_query = '''
-        SELECT Quiz, Question, Question_ID, Answer1, Answer2, Answer3, Answer4, Correct_answer, Quiz_name FROM `quiz`
-        INNER JOIN `question` ON Quiz_ID = Quiz 
-        WHERE Quiz = (SELECT Quiz_ID FROM `quiz` WHERE Quiz_ID = %s)
+        SELECT * FROM `question`
+        WHERE quiz = %s
         '''
         
         cursor.execute(get_quiz_query, (quiz,))
-        get_quiz = cursor.fetchall()
-        
-        session["curr_quiz"] = get_quiz[1::]
-        session["curr_question"] = get_quiz[0]
-        session["correct_ans"] = 0
-        session["quiz_name"] = get_quiz[0][8]
-            
+        session["questions"] = cursor.fetchall()
+        session["curr_question"] = session["questions"][0]
+        session["questions"].pop(0)
+                    
         return redirect(url_for('play_quiz', quiz = quiz))
 
     return redirect(url_for("index"))
@@ -327,29 +322,13 @@ def get_question(quiz):
 def next_question(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
 
-        if not ("curr_question" in session and "curr_quiz" in session):
+        if not ("questions" in session and "curr_question" in session):
             return redirect(url_for("play_list"))
         
-        try:
-            session["curr_question"] = session["curr_quiz"][0]
-            session["curr_quiz"] = session["curr_quiz"][1::]
-        except:
-            get_user_ID = "SELECT User_ID FROM `user` WHERE Username = %s"
-            user = session["username"]
-            cursor.execute(get_user_ID, (user,))
-            
-            (user_ID,) = cursor.fetchone()
-            quiz_ID = quiz
-            score = session["correct_ans"]
-            
-            quiz_playthrough_set = '''INSERT INTO `quiz_playthrough` (User, Quiz, Score) VALUES (%s, %s, %s)'''
-            cursor.execute(quiz_playthrough_set, (user_ID, quiz_ID, score))
-            conn.commit()
-            
-            del session["correct_ans"]
-            del session["curr_question"]
-            del session["curr_quiz"]
-            
+        if session["questions"]:
+            session["curr_question"] = session["questions"][0]
+            session["questions"].pop(0)
+        else:
             return redirect(url_for('play_list'))
             
         return redirect(url_for('play_quiz', quiz = quiz))

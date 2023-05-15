@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block body %}
     <section>
-        <h1></h1>
+        <h1>{{question}}</h1>
+        <form method="post">
+            <input type="submit" value="submit">
+        </form>
     </section>
 
 {% endblock %}
