@@ -1,0 +1,2 @@
+INSERT INTO `correctionStatus` (`correctionStatus_ID`, `status`) VALUES (NULL, 'Venter vurdering'), (NULL, 'Bestått'), (NULL, 'Ikke bestått');
+INSERT INTO `questionType` (`questionType_ID`, `type`) VALUES (NULL, 'Flervalg'), (NULL, 'Essay'), (NULL, 'Multiple choice');

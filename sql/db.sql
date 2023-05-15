@@ -8,33 +8,33 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema stud_v23_kma150
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema mydb
+-- Schema stud_v23_kma150
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
-USE `mydb` ;
+CREATE SCHEMA IF NOT EXISTS `stud_v23_kma150` DEFAULT CHARACTER SET utf8 ;
+USE `stud_v23_kma150` ;
 
 -- -----------------------------------------------------
--- Table `mydb`.`questionType`
+-- Table `stud_v23_kma150`.`questionType`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`questionType` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`questionType` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`questionType` (
-  `questionType_ID` INT NOT NULL,
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`questionType` (
+  `questionType_ID` INT NOT NULL AUTO_INCREMENT,
   `type` VARCHAR(45) NULL,
   PRIMARY KEY (`questionType_ID`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`quiz`
+-- Table `stud_v23_kma150`.`quiz`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`quiz` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`quiz` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`quiz` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`quiz` (
   `quiz_ID` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL,
@@ -44,11 +44,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`question`
+-- Table `stud_v23_kma150`.`question`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`question` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`question` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`question` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`question` (
   `question_ID` INT NOT NULL AUTO_INCREMENT,
   `question` VARCHAR(255) NOT NULL,
   `questionType` INT NOT NULL,
@@ -58,23 +58,23 @@ CREATE TABLE IF NOT EXISTS `mydb`.`question` (
   INDEX `fk_question_quiz1_idx` (`quiz` ASC) VISIBLE,
   CONSTRAINT `fk_question_questionType`
     FOREIGN KEY (`questionType`)
-    REFERENCES `mydb`.`questionType` (`questionType_ID`)
+    REFERENCES `stud_v23_kma150`.`questionType` (`questionType_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_question_quiz1`
     FOREIGN KEY (`quiz`)
-    REFERENCES `mydb`.`quiz` (`quiz_ID`)
+    REFERENCES `stud_v23_kma150`.`quiz` (`quiz_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`user`
+-- Table `stud_v23_kma150`.`user`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`user` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`user` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`user` (
   `username` VARCHAR(255) NOT NULL,
   `isAdmin` TINYINT NOT NULL DEFAULT 0,
   `firstName` VARCHAR(255) NOT NULL,
@@ -85,11 +85,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`correctionStatus`
+-- Table `stud_v23_kma150`.`correctionStatus`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`correctionStatus` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`correctionStatus` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`correctionStatus` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`correctionStatus` (
   `correctionStatus_ID` INT NOT NULL AUTO_INCREMENT,
   `status` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`correctionStatus_ID`))
@@ -97,11 +97,11 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`answer`
+-- Table `stud_v23_kma150`.`answer`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`answer` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`answer` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`answer` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`answer` (
   `answer_ID` INT NOT NULL AUTO_INCREMENT,
   `answer` TEXT NOT NULL,
   `question` INT NOT NULL,
@@ -115,28 +115,28 @@ CREATE TABLE IF NOT EXISTS `mydb`.`answer` (
   INDEX `fk_answer_correctionStatus1_idx` (`status` ASC) VISIBLE,
   CONSTRAINT `fk_answer_question1`
     FOREIGN KEY (`question`)
-    REFERENCES `mydb`.`question` (`question_ID`)
+    REFERENCES `stud_v23_kma150`.`question` (`question_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_answer_user1`
     FOREIGN KEY (`user`)
-    REFERENCES `mydb`.`user` (`username`)
+    REFERENCES `stud_v23_kma150`.`user` (`username`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_answer_correctionStatus1`
     FOREIGN KEY (`status`)
-    REFERENCES `mydb`.`correctionStatus` (`correctionStatus_ID`)
+    REFERENCES `stud_v23_kma150`.`correctionStatus` (`correctionStatus_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `mydb`.`choices`
+-- Table `stud_v23_kma150`.`choices`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `mydb`.`choices` ;
+DROP TABLE IF EXISTS `stud_v23_kma150`.`choices` ;
 
-CREATE TABLE IF NOT EXISTS `mydb`.`choices` (
+CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`choices` (
   `choices_ID` INT NOT NULL,
   `choice1` VARCHAR(255) NOT NULL,
   `choice2` VARCHAR(255) NOT NULL,
@@ -148,7 +148,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`choices` (
   INDEX `fk_choices_question1_idx` (`question_question_ID` ASC, `question_quiz` ASC) VISIBLE,
   CONSTRAINT `fk_choices_question1`
     FOREIGN KEY (`question_question_ID` , `question_quiz`)
-    REFERENCES `mydb`.`question` (`question_ID` , `quiz`)
+    REFERENCES `stud_v23_kma150`.`question` (`question_ID` , `quiz`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
