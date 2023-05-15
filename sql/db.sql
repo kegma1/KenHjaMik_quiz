@@ -137,7 +137,7 @@ ENGINE = InnoDB;
 DROP TABLE IF EXISTS `stud_v23_kma150`.`choices` ;
 
 CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`choices` (
-  `choices_ID` INT NOT NULL,
+  `choices_ID` INT NOT NULL AUTO_INCREMENT,
   `choice1` VARCHAR(255) NOT NULL,
   `choice2` VARCHAR(255) NOT NULL,
   `choice3` VARCHAR(255) NOT NULL,

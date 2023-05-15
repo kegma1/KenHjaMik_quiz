@@ -1,32 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
     <section>
-        <table>
-            <tr>
-                <th>Question:</th>
-                <th></th>
-                <th>Option 1:</th>
-                <th>Option 2:</th>
-                <th>Option 3:</th>
-                <th>Option 4:</th>
-            </tr>
-            {% from "_form_helper.html" import render_field %}
-                <tr>
-                    <td style="border-color: transparent;"><h2>{{player_quiz[1]}}</h2></td> <!-- Question -->
-                    <td style="border-color: transparent; font-size: 2.5vw;">:  </td>
-                    <td>{{player_quiz[3]}}</td> <!-- Answer 1 -->
-                    <td>{{player_quiz[4]}}</td> <!-- Answer 2 -->
-                    <td>{{player_quiz[5]}}</td> <!-- Answer 3 -->
-                    <td>{{player_quiz[6]}}</td> <!-- Answer 4 -->
-                </tr>
-                <tr>
-                    <td style="border-color: transparent; height: 20px;"></td>
-                </tr>
-        </table>
-    <form method="POST">
-        <div id="render_div">{{ render_field(form.options) }}</div>
-        <input type="submit" value="Next">  
-    </form>
+        <h1></h1>
     </section>
 
 {% endblock %}

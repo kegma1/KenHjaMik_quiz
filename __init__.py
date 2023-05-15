@@ -15,12 +15,12 @@ app.secret_key = secrets.token_urlsafe(16)
 class LoginForm(Form):
     username = StringField("Brukernavn", [validators.Length(min=4, max=25), validators.DataRequired()])
     password = PasswordField("Passord", [validators.DataRequired()])
-    login_type = RadioField("", choices=[("play", "Play"), ("edit", "Edit")], default="play")
+    login_type = RadioField("", choices=[("play", "Play"), ("edit", "Admin")], default="play")
 
     user_data = None
 
     def set_user(self, username):
-        cursor.execute("SELECT Username, Password, Is_admin  FROM `user` WHERE Username = %s;", (username,))
+        cursor.execute("SELECT username, password, isAdmin  FROM `user` WHERE username = %s;", (username,))
         self.user_data = cursor.fetchone()
 
     def validate_username(self, username):
@@ -40,7 +40,7 @@ class LoginForm(Form):
             if self.user_data != None:
                 is_admin = self.user_data[2]
                 if is_admin != 1:
-                    raise ValidationError("Access denide")
+                    raise ValidationError("Access denied")
 
 
 @app.route("/", methods = ["GET", "POST"])
@@ -61,7 +61,9 @@ def index():
     return render_template("index.html", title="login", form=form)
 
 class RegisterUserForm(Form):
-    username = StringField('Brukernavn', [validators.Length(min=4, max=25), validators.DataRequired()])
+    username = StringField('Brukernavn', [validators.Length(min=4, max=255), validators.DataRequired()])
+    firstName = StringField('First name', [validators.Length(min=4, max=255), validators.DataRequired()])
+    lastName = StringField('Last name', [validators.Length(min=4, max=255), validators.DataRequired()])
     password = PasswordField('Passord', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords must match')
@@ -69,7 +71,7 @@ class RegisterUserForm(Form):
     confirm = PasswordField('Bekreft passord')
 
     def validate_username(self, username):
-        get_users_query = "SELECT Username FROM `user` WHERE Username = %s;"
+        get_users_query = "SELECT username FROM `user` WHERE username = %s;"
         cursor.execute(get_users_query, (username.data,))
         if cursor.fetchall() != []:
             raise ValidationError("Username already exists")
@@ -80,33 +82,22 @@ def sign_up():
     if request.method == "POST" and form.validate():
         usename = form.username.data
         password = form.password.data
+        firstName = form.firstName.data
+        lastName = form.lastName.data
         
         hashed_password = generate_password_hash(password)
         creat_new_user_query = """
-           INSERT INTO `user` (`Username`, `Password`, `Is_admin`) VALUES (%s, %s, 0) 
+           INSERT INTO `user` (`username`, `password`, `isAdmin`, `firstName`, `lastName`) VALUES (%s, %s, 0, %s, %s) 
         """
-        args = (usename, hashed_password)
+        args = (usename, hashed_password, firstName, lastName)
         cursor.execute(creat_new_user_query, args)
         conn.commit()
         return redirect(url_for("index"))
 
     return render_template("sign_up.html", title="sign up", form=form)
 
-@app.route("/score/<user>")
-def score(user):
-    if "is_logged_in" in session and session["is_logged_in"]:
-        if "username" in session and session["username"] == user:
-            get_score_query = """
-                SELECT q.Quiz_name, qpt.Score,q.Total_questions FROM `quiz_playthrough` as qpt
-                INNER JOIN `user` as u ON qpt.User = u.User_ID
-                INNER JOIN `quiz` as q ON qpt.Quiz = q.Quiz_ID
-                WHERE u.Username = %s;
-            """
-            args = (user,)
-            cursor.execute(get_score_query, args)
-            scores = cursor.fetchall()
-            return render_template("score.html", title=f"{session['username']}'s score", is_score=1, scores=scores, username=user)
-    return redirect(url_for("index"))
+
+# ------------------ Edit -------------------
 
 class Quiz(Form):
     quizName = StringField('Quiz name', [validators.Length(min=1, max=25), validators.DataRequired()])
@@ -279,6 +270,8 @@ def edit_question(quizid, questionid):
             return render_template("MakeQuestion.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
     return redirect(url_for("index"))
 
+# ------------------ Play -------------------
+
 @app.route("/play", methods=["POST", "GET"])
 def play_list():
     if "is_logged_in" in session and session["is_logged_in"]:
@@ -291,8 +284,7 @@ def play_list():
 
     return redirect(url_for("index"))
 
-class Options(Form):
-    options = RadioField('', choices=[(1, 'Option 1'), (2, 'Option 2'), (3, 'Option 3'), (4, 'Option 4')], default = None)
+
 
 @app.route("/play/<quiz>", methods=["POST", "GET"])
 def play_quiz(quiz):
@@ -300,24 +292,17 @@ def play_quiz(quiz):
 
         if not ("curr_question" in session and "curr_quiz" in session):
             return redirect(url_for("play_list"))
-
-
-        form = Options(request.form)
          
-        if request.method == 'POST' and form.validate():
-            answer = form.options.data
-            
-            if int(answer) == int(session["curr_question"][7]):
-                session["correct_ans"] += 1
-            
+        if request.method == 'POST':
+                        
             return redirect(url_for("play_next", quiz = quiz))
             
-        return render_template("play_quiz.html", title=f'Playing: {session["quiz_name"]}', player_quiz = session["curr_question"], form = form)
+        return render_template("play_quiz.html", title=f'Playing: {session["quiz_name"]}', player_quiz = session["curr_question"])
 
     return redirect(url_for("index"))
 
 @app.route("/play/<quiz>/get")
-def play_get(quiz):
+def get_question(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
         
         get_quiz_query = '''
@@ -339,7 +324,7 @@ def play_get(quiz):
     return redirect(url_for("index"))
 
 @app.route("/play/<quiz>/next")
-def play_next(quiz):
+def next_question(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
 
         if not ("curr_question" in session and "curr_quiz" in session):
