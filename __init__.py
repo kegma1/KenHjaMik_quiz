@@ -112,31 +112,29 @@ def edit_list():
                 name = form.quizName.data
                 theme = form.quizTheme.data
 
-                creat_new_quiz_query = """INSERT INTO `quiz` (`Quiz_name`, `Quiz_description`) VALUES (%s, %s)"""
+                creat_new_quiz_query = """INSERT INTO `quiz` (`name`, `description`) VALUES (%s, %s)"""
 
                 args = (name, theme)
                 cursor.execute(creat_new_quiz_query, args)
                 conn.commit()
                 return redirect(url_for('edit_list'))
             
-            get_quiz_query = "SELECT Quiz_name, Quiz_description, Quiz_ID, Total_questions FROM `quiz`"
+            get_quiz_query = "SELECT name, description, quiz_ID, totalQuestions FROM `quiz`"
             cursor.execute(get_quiz_query)
             quizList = cursor.fetchall()
             
             return render_template("QuizList.html", title="Quiz list", quizList = quizList, form = form)
     return redirect(url_for("index"))
 
-@app.route('/delete/<int:id>')
-def delete(id):
+@app.route('/deleteQuiz/<int:id>')
+def deleteQuiz(id):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
             id = [id]
             delQuestionQuery = "DELETE FROM `question` WHERE Quiz = %s"
-            delScoreQuery = "DELETE FROM `quiz_playthrough` WHERE Quiz = %s"
             delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
             
             cursor.execute(delQuestionQuery, id)
-            cursor.execute(delScoreQuery, id)
             cursor.execute(delQuery, id)
             conn.commit()
             return redirect(url_for('edit_list'))
