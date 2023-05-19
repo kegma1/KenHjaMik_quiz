@@ -278,10 +278,13 @@ def play_list():
         all_quizzes = cursor.fetchall()
         all_quizzes_len = len(all_quizzes)
 
-        return render_template("play_list.html", title="All quizzes", all_quizzes = all_quizzes, a_q_len = all_quizzes_len)
+        return render_template("play_list.html",\
+            title="All quizzes",\
+            all_quizzes = all_quizzes, \
+            a_q_len = all_quizzes_len
+        )
 
     return redirect(url_for("index"))
-
 
 
 @app.route("/play/<quiz>", methods=["POST", "GET"])
@@ -292,21 +295,40 @@ def play_quiz(quiz):
             return redirect(url_for("play_list"))
          
         if request.method == 'POST':
+            print(request.form)
             return redirect(url_for("next_question", quiz = quiz))
             
-        return render_template("play_quiz.html", title='Playing', question=session["curr_question"][1])
+        choices = None
+        if session["curr_question"][1] != "Essay":
+            choices = get_choices(quiz, session["curr_question"][3])
+
+        return render_template("play_quiz.html",\
+            title=f'Playing {session["curr_question"][2]}',\
+            question=session["curr_question"][0],\
+            question_type=session["curr_question"][1],\
+            choices=choices
+        )
 
     return redirect(url_for("index"))
+
+def get_choices(quiz, question):
+    query = """
+        SELECT choice1, choice2, choice3, choice4 FROM `choices` 
+        WHERE question_quiz = %s AND question_question_ID = %s
+    """
+    cursor.execute(query, (quiz, question))
+    return cursor.fetchone()
 
 @app.route("/play/<quiz>/get")
 def get_question(quiz):
     if "is_logged_in" in session and session["is_logged_in"]:
         
         get_quiz_query = '''
-        SELECT * FROM `question`
-        WHERE quiz = %s
+        SELECT q.question, qt.type, qz.name, q.question_ID  FROM `question` q
+        INNER JOIN `questionType` qt on q.questionType = qt.questionType_ID 
+        INNER JOIN `quiz` qz on q.quiz = qz.quiz_ID
+        WHERE q.quiz = %s
         '''
-        
         cursor.execute(get_quiz_query, (quiz,))
         session["questions"] = cursor.fetchall()
         session["curr_question"] = session["questions"][0]
