@@ -106,7 +106,6 @@ CREATE TABLE IF NOT EXISTS `stud_v23_kma150`.`answer` (
   `answer` TEXT NOT NULL,
   `question` INT NOT NULL,
   `user` VARCHAR(255) NOT NULL,
-  `result` TINYINT NOT NULL,
   `comment` TEXT NULL,
   `status` INT NOT NULL,
   PRIMARY KEY (`answer_ID`, `question`),
