@@ -295,7 +295,21 @@ def play_quiz(quiz):
             return redirect(url_for("play_list"))
          
         if request.method == 'POST':
-            print(request.form)
+            answer = ""
+            if session["curr_question"][1] == "Essay":
+                answer = request.form["essey_textarea"]
+            elif session["curr_question"][1] == "Flervalg":
+                answer = "".join(request.form.getlist("cb_choice"))
+            elif session["curr_question"][1] == "Multiple choice":
+                answer = str(request.form["mc_choice"])
+
+            insert_query = """
+                INSERT INTO `answer` (`answer`, `question`, `user`, `status`) VALUES (%s, %s, %s, 1) 
+            """
+            args = (answer, session["curr_question"][3], session["username"])
+            cursor.execute(insert_query, args)
+            conn.commit()
+
             return redirect(url_for("next_question", quiz = quiz))
             
         choices = None
