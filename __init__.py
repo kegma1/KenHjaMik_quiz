@@ -123,7 +123,7 @@ def edit_list():
             cursor.execute(get_quiz_query)
             quizList = cursor.fetchall()
             
-            return render_template("QuizList.html", title="Quiz list", quizList = quizList, form = form)
+            return render_template("quiz_List.html", title="Quiz list", quizList = quizList, form = form)
     return redirect(url_for("index"))
 
 @app.route('/deleteQuiz/<int:id>')
@@ -182,7 +182,7 @@ def edit_quiz(id):
 
             quiz_len = len(questionList)
                 
-            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
+            return render_template("make_quiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
     return redirect(url_for("index"))
 
 def PlusCount(quizID):
@@ -265,7 +265,7 @@ def edit_question(quizid, questionid):
             cursor.execute(creat_question_query, arg)
             questionInfo = cursor.fetchone()
             form.correctAnswer.default = questionInfo[5]
-            return render_template("MakeQuestion.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
+            return render_template("make_question.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
     return redirect(url_for("index"))
 
 # ------------------ Play -------------------
