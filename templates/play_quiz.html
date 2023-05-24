@@ -23,7 +23,7 @@
 {% endmacro %}
 
 {% macro render_multiple_choice(data) %}
-    <input type="radio" name="mc_choice" id="mc-1" value="1"><label for="mc-1">{{data[0]}}</label><br>
+    <input type="radio" name="mc_choice" id="mc-1" value="1" required><label for="mc-1">{{data[0]}}</label><br>
     <input type="radio" name="mc_choice" id="mc-2" value="2"><label for="mc-2">{{data[1]}}</label><br>
     <input type="radio" name="mc_choice" id="mc-3" value="3"><label for="mc-3">{{data[2]}}</label><br>
     <input type="radio" name="mc_choice" id="mc-4" value="4"><label for="mc-4">{{data[3]}}</label><br>

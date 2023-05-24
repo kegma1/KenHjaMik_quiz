@@ -4,6 +4,8 @@ from wtforms import Form, StringField, PasswordField, validators, ValidationErro
 import secrets
 import mysql.connector
 from db_loggin import dbconfig
+import datetime
+
 
 conn = mysql.connector.connect(**dbconfig)
 cursor = conn.cursor(prepared=True)
@@ -303,12 +305,9 @@ def play_quiz(quiz):
             elif session["curr_question"][1] == "Multiple choice":
                 answer = str(request.form["mc_choice"])
 
-            insert_query = """
-                INSERT INTO `answer` (`answer`, `question`, `user`, `status`) VALUES (%s, %s, %s, 1) 
-            """
-            args = (answer, session["curr_question"][3], session["username"])
-            cursor.execute(insert_query, args)
-            conn.commit()
+            temp_answers = session["answers"]
+            temp_answers.append((answer, session["curr_question"][3]))
+            session["answers"] = temp_answers
 
             return redirect(url_for("next_question", quiz = quiz))
             
@@ -347,6 +346,7 @@ def get_question(quiz):
         session["questions"] = cursor.fetchall()
         session["curr_question"] = session["questions"][0]
         session["questions"].pop(0)
+        session["answers"] = []
                     
         return redirect(url_for('play_quiz', quiz = quiz))
 
@@ -363,6 +363,15 @@ def next_question(quiz):
             session["curr_question"] = session["questions"][0]
             session["questions"].pop(0)
         else:
+            insert_query = """
+                INSERT INTO `answer` (`answer`, `question`, `user`, `status`, `time_of_playthough`) 
+                VALUES (%s, %s, %s, 1, %s) 
+            """
+            time_of_playthough = datetime.datetime.now()
+            for answer, question in session["answers"]:
+                args = (answer, question, session["username"], time_of_playthough)
+                cursor.execute(insert_query, args)
+            conn.commit()
             return redirect(url_for('play_list'))
             
         return redirect(url_for('play_quiz', quiz = quiz))
