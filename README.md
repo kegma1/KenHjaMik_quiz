@@ -8,3 +8,5 @@ Gi kopien navnet "db_loggin.py" og login detaljene for din database
 - Kennet Andre Mathisen
 - Hjalmar Johnsen
 - Mikael Lunde Isaksen
+
+# [Gammle repo](https://github.com/kegma1/KenHjaMik_quiz)

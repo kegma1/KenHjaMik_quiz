@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block body%}
+    <section>
+        <a href="{{ url_for("edit_list")}}">&lt;--</a><br>
+    <table>
+
+        <tr>
+            <th>Quiz ID:</th>
+            <th>Name:</th>
+            <th>Description:</th>
+            <th>Total questions:</th>
+            <th></th>
+        </tr>
+
+        {% for i in range(q_len) %}
+        <tr>
+            {% for j in range(5)%}
+                {% if j != 4%}
+                    <td>
+                        {{ quizzes[i][j]}}
+                    </td>
+                {% else %}
+                    <td>
+                        <a href="{{url_for("quiz_grading", quiz_ID = quizzes[i][0])}}">OPEN</a>
+                    </td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor%}
+    </table>
+    </section>
+{% endblock %}

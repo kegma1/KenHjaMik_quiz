@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
 <section>
-    <a href="{{ url_for("index")}}">Back to login</a><br>
+    <a href="{{ url_for("index")}}">Back to login</a>
+    <a href="{{ url_for("grading")}}">Grade quizzes</a><hr>
     <h1>Make a new quiz:</h1>
     {% from "_form_helper.html" import render_field %}
     <form method="POST">

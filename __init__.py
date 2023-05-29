@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, url_for, session, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
-from wtforms import Form, StringField, PasswordField, validators, ValidationError, RadioField
+from wtforms import Form, StringField, PasswordField, validators, ValidationError, RadioField, FieldList, FormField, SubmitField
 import secrets
 import mysql.connector
 from db_loggin import dbconfig
 import datetime
-
 
 conn = mysql.connector.connect(**dbconfig)
 cursor = conn.cursor(prepared=True)
@@ -24,6 +23,7 @@ class LoginForm(Form):
     def set_user(self, username):
         cursor.execute("SELECT username, password, isAdmin  FROM `user` WHERE username = %s;", (username,))
         self.user_data = cursor.fetchone()
+        conn.commit()
 
     def validate_username(self, username):
         self.set_user(username.data)
@@ -330,7 +330,9 @@ def get_choices(quiz, question):
         WHERE question_quiz = %s AND question_question_ID = %s
     """
     cursor.execute(query, (quiz, question))
-    return cursor.fetchone()
+    x = cursor.fetchone()
+    conn.commit()
+    return x
 
 @app.route("/play/<quiz>/get")
 def get_question(quiz):
@@ -377,6 +379,137 @@ def next_question(quiz):
         return redirect(url_for('play_quiz', quiz = quiz))
 
     return redirect(url_for("index"))
+
+# ------------------ View result -------------------
+@app.route("/results")
+def list_playthroughts():
+    if "is_logged_in" in session and session["is_logged_in"]:
+        get_playtroughs_query = """
+            SELECT qz.name, cs.status, a.time_of_playthough, SUM(a.status), qz.totalQuestions FROM `answer` a
+            INNER JOIN `correctionStatus` cs ON a.status = cs.correctionStatus_ID
+            INNER JOIN `question` q ON a.question = q.question_ID
+            INNER JOIN `quiz` qz ON q.quiz = qz.quiz_ID
+            WHERE a.user = %s
+            GROUP BY `time_of_playthough`
+        """
+        cursor.execute(get_playtroughs_query, (session["username"],))
+        playtroughs = cursor.fetchall()
+        conn.commit()
+        
+        return render_template("list_playthoughs.html",\
+            title=f"{session['username']}'s results",\
+            playtroughs=playtroughs\
+        )
+    return redirect(url_for("index"))
+
+@app.route("/results/<playthrough>")
+def view_playthrought(playthrough):
+    if "is_logged_in" in session and session["is_logged_in"]:
+        get_answers_query = """
+            SELECT cs.status, a.comment, a.answer, q.question, qt.type, a.question, q.quiz FROM `answer` a
+            INNER JOIN `correctionStatus` cs ON a.status = cs.correctionStatus_ID
+            INNER JOIN `question` q ON a.question = q.question_ID
+            INNER JOIN `quiz` qz ON q.quiz = qz.quiz_ID
+            INNER JOIN `questionType` qt ON q.questionType = qt.questionType_ID
+            WHERE a.user = %s and a.time_of_playthough = %s
+            ORDER BY q.question_ID
+        """
+        cursor.execute(get_answers_query, (session["username"], playthrough))
+        answers = cursor.fetchall()
+        conn.commit()
+        
+        return render_template("view_playtrough.html",\
+            title=f"{playthrough}",\
+            answers=answers,\
+            fetch_options=fetch_options\
+        )
+    return redirect(url_for("index"))
+
+def fetch_options(quiz, question, type, answer):
+    choices = get_choices(quiz, question)
     
+    if type == "Flervalg":
+        html = ""
+        for i, choice in enumerate(choices, start=1):
+            is_checked = str(i) in answer
+            html += f"<input type='checkbox' name='cb_choice' id='cb-{i}' {'checked' if is_checked else 'disabled'}><label for='cb-{i}'>{choice}</label><br>"
+        return html
+    elif type == "Multiple choice":
+        html = ""
+        for i, choice in enumerate(choices, start=1):
+            is_checked = str(i) in answer
+            html += f"<input type='radio'  id='mc-{i}' {'checked' if is_checked else 'disabled'} {'checked' if is_checked else ''}><label for='mc-{i}'>{choice}</label><br>"
+        return html
+
+# ------------------ Grading -------------------
+
+@app.route("/grading", methods=["POST", "GET"])
+def grading():
+    if "is_logged_in" in session and session["is_logged_in"] and "is_admin" in session:
+        cursor.execute("SELECT quiz_ID, name, description, totalQuestions FROM `quiz`")
+        quizzes = cursor.fetchall()
+    
+        return render_template('grading.html', quizzes = quizzes, q_len = len(quizzes))
+    
+    return redirect(url_for("index"))
+
+@app.route("/grading/<quiz_ID>", methods=["POST", "GET"])
+def quiz_grading(quiz_ID):
+    if "is_logged_in" in session and session["is_logged_in"]and "is_admin" in session:
+        
+        quiz_unique_query = '''
+            SELECT a.user, a.time_of_playthough, SUM(a.status) AS stat, qz.totalQuestions AS totq
+            FROM answer a
+            INNER JOIN correctionStatus cs ON a.status = cs.correctionStatus_ID
+            INNER JOIN question q ON a.question = q.question_ID
+            INNER JOIN quiz qz ON q.quiz = qz.quiz_ID
+            WHERE qz.quiz_ID = %s
+            GROUP BY a.user, a.time_of_playthough, qz.totalQuestions
+            HAVING SUM(a.status) = qz.totalQuestions;
+        '''
+        cursor.execute(quiz_unique_query, (quiz_ID,))
+        quiz_unique_users = cursor.fetchall()
+        conn.commit()
+                
+        return render_template("grading_quiz.html", quiz_ID = quiz_ID, quiz_users = quiz_unique_users)
+        
+    return redirect(url_for("index"))
+    
+@app.route("/grading/<quiz_ID>/<user>/<time>", methods=["POST", "GET"])
+def user_quiz_grading(quiz_ID, user, time):
+    if "is_logged_in" in session and session["is_logged_in"]and "is_admin" in session:
+        
+        quiz_ID_query = '''
+            SELECT a.question, a.answer, a.user, a.comment, a.time_of_playthough, q.question, q.questionType, qt.type
+            FROM `answer` a 
+            INNER JOIN `question` q 
+            ON q.question_ID = a.question
+            INNER JOIN `questionType` as qt
+            ON qt.questionType_ID = q.questionType
+            WHERE q.quiz = %s AND a.user = %s AND a.time_of_playthough = %s
+            ORDER BY a.question
+        '''
+        
+        cursor.execute(quiz_ID_query, (quiz_ID, user, time))
+        quiz_ID_playthrough = cursor.fetchall()
+        conn.commit()
+        
+        if request.method == "POST":
+            for i in range(len(quiz_ID_playthrough)):
+                
+                update_query = '''
+                    UPDATE answer
+                    SET comment = %s, status = %s
+                    WHERE question = %s AND user = %s AND time_of_playthough = %s
+                '''
+                cursor.execute(update_query, (request.form[f"text_field-{i+1}"], int(request.form[f"radio_button-{i+1}"]), quiz_ID_playthrough[i][0], user, time))
+                conn.commit()
+            
+            return redirect(url_for("quiz_grading", quiz_ID = quiz_ID))
+        
+        return render_template("grading_quiz_user.html", quiz_ID = quiz_ID, quiz_ID_playthrough = quiz_ID_playthrough, fetch_options = fetch_options)
+        
+    return redirect(url_for("index"))
+
 if __name__ == "__main__":
     app.run()

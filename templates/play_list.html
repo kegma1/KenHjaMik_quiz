@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
     <section>
+        <a href="{{ url_for("index")}}">HOME</a><a href="{{ url_for("list_playthroughts")}}">RESULTS</a>
+        <hr>
         <table>
             <tr>
                 <th>Title:</th>
@@ -18,7 +20,6 @@
                 
             {% endfor %}
         </table>
-        <hr><a href="{{ url_for("index")}}">HOME</a>
     </section>
 
 {% endblock %}

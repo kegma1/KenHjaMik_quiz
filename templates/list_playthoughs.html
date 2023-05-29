@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+    <a href="{{ url_for("play_list")}}"><---</a><br>
+    <table>
+        <tr>
+            <th>Quiz:</th>
+            <th>Status:</th>
+            <th>Dato:</th>
+        </tr>
+        {% for (quiz, status, date, c, total_questions) in playtroughs %}
+            <tr>
+                <td>{{ quiz }}</td>
+                {% if c > total_questions %}
+                    <td>Rettet</td>
+                {% else %}
+                    <td>{{ status }}</td>
+                {% endif %}
+                <td>{{ date }}</td>
+                <td><a href="{{ url_for("view_playthrought", playthrough=date) }}">VIEW</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}
