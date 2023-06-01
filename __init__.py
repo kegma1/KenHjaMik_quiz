@@ -123,31 +123,13 @@ def edit_list():
             cursor.execute(get_quiz_query)
             quizList = cursor.fetchall()
             
-            return render_template("QuizList.html", title="Quiz list", quizList = quizList, form = form)
+            return render_template("MakeQuiz.html", title="Quiz list", quizList = quizList, form = form)
     return redirect(url_for("index"))
-
-@app.route('/deleteQuiz/<int:id>')
-def deleteQuiz(id):
-    if "is_admin" in session and "is_logged_in" in session:
-        if session["is_admin"] and session["is_logged_in"]:
-            id = [id]
-            delQuestionQuery = "DELETE FROM `question` WHERE Quiz = %s"
-            delQuery = "DELETE FROM `quiz` WHERE Quiz_ID = %s"
-            
-            cursor.execute(delQuestionQuery, id)
-            cursor.execute(delQuery, id)
-            conn.commit()
-            return redirect(url_for('edit_list'))
-    return f'Fuck you'
 
 class Question(Form):
     question = StringField('Question', [validators.Length(min=1, max=100), validators.DataRequired()])
-    answer1 = StringField('Answer1', [validators.Length(min=1, max=45), validators.DataRequired()])
-    answer2 = StringField('Answer2', [validators.Length(min=1, max=45), validators.DataRequired()])
-    answer3 = StringField('Answer3', [validators.Length(min=1, max=45), validators.DataRequired()])
-    answer4 = StringField('Answer4', [validators.Length(min=1, max=45), validators.DataRequired()])
-
-    correctAnswer = RadioField('', choices=[(1, 'Answer 1'), (2, 'Answer 2'), (3, 'Answer 3'), (4, 'Answer 4')], default = None)
+    
+    type = RadioField('', choices=[(1, 'Multichoice'), (2, 'Essay'), (3, 'Multiple Choice')], default = None)
 
 @app.route('/edit/quiz<int:id>', methods =['GET', 'POST'])
 def edit_quiz(id):
@@ -157,72 +139,31 @@ def edit_quiz(id):
             form = Question(request.form)
             if request.method == 'POST' and form.validate():
                 question = form.question.data
-                answer1 = form.answer1.data
-                answer2 = form.answer2.data
-                answer3 = form.answer3.data
-                answer4 = form.answer4.data
+                type = form.type.data
 
-                correctAnswer = form.correctAnswer.data
-
-                creat_new_question = """INSERT INTO `question` (`Question`, Answer1 , Answer2, Answer3, Answer4, Correct_answer, `Quiz`) VALUES (%s, %s, %s, %s, %s, %s , %s)"""
-                args = (question, answer1, answer2, answer3, answer4, correctAnswer, id)
-                cursor.execute(creat_new_question, args)
-                conn.commit()
-                PlusCount(quizID)
-                return redirect(url_for('edit_quiz', id = id))
+                if type == '2':
+                    creat_new_question = """INSERT INTO `question` (Question, questionType, quiz) VALUES (%s, %s, %s)"""
+                    args = (question, type, id)
+                    cursor.execute(creat_new_question, args)
+                    conn.commit()
+                    PlusCount(quizID)
+                    return redirect(url_for('edit_quiz', id = id))
+                elif type == '1' or type == '3':
+                    return redirect(url_for('edit_question', id = id, questionid = None, argument = [question, type]))
             
             get_question_query = "SELECT Question, Question_ID, Quiz FROM `question` WHERE Quiz = %s"
             questionid = [id]
             cursor.execute(get_question_query, questionid)
             questionList = cursor.fetchall()
 
-            get_quiz_theme_query = "SELECT Quiz_name, Quiz_description, Quiz_ID FROM `quiz` WHERE Quiz_ID = %s"
+            get_quiz_theme_query = "SELECT name, description, quiz_ID FROM `quiz` WHERE quiz_ID = %s"
             cursor.execute(get_quiz_theme_query, questionid)
             quizInfo = cursor.fetchall()
 
             quiz_len = len(questionList)
                 
-            return render_template("MakeQuiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
+            return render_template("MakeQuestion.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
     return redirect(url_for("index"))
-
-def PlusCount(quizID):
-    get_question_query = "SELECT Total_questions FROM `quiz` WHERE Quiz_ID = %s"
-    args = [quizID]
-    cursor.execute(get_question_query, args)
-    (value,) = cursor.fetchone()
-    value += 1
-
-    update_question_query = "UPDATE `quiz` SET Total_questions = %s WHERE Quiz_ID = %s"
-    arg = (value, quizID)
-    cursor.execute(update_question_query, arg)
-    conn.commit()
-
-def MinusCount(quizID):
-    get_question_query = "SELECT Total_questions FROM `quiz` WHERE Quiz_ID = %s"
-    args = [quizID]
-    cursor.execute(get_question_query, args)
-    (value,) = cursor.fetchone()
-    value -= 1
-    
-
-    update_question_query = "UPDATE `quiz` SET Total_questions = %s WHERE Quiz_ID = %s"
-    arg = (value, quizID)
-    cursor.execute(update_question_query, arg)
-    conn.commit()
-
-@app.route('/edit/delete/question/<int:questionid>/<int:quizid>')
-def deleteQuestion(questionid, quizid):
-    if "is_admin" in session and "is_logged_in" in session:
-        if session["is_admin"] and session["is_logged_in"]:
-
-            id = [questionid]
-            delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
-            
-            cursor.execute(delQuery, id)
-            conn.commit()
-            MinusCount(quizid)
-            return redirect(url_for('edit_quiz', id = quizid))
-    return f'Fuck you'
 
 @app.route('/edit/update<int:quizid>', methods = ["GET", "POST"])
 def configure_quiz(quizid):
@@ -238,23 +179,31 @@ def configure_quiz(quizid):
         conn.commit()
     return redirect(url_for("edit_quiz", id = quizid))
 
+class Options(Form):
+    option1 = StringField('Option 1', [validators.Length(min=1, max=100), validators.DataRequired()])
+    option2 = StringField('Option 2', [validators.Length(min=1, max=100), validators.DataRequired()])
+    option3 = StringField('Option 3', [validators.Length(min=1, max=100), validators.DataRequired()])
+    option4 = StringField('Option 4', [validators.Length(min=1, max=100), validators.DataRequired()])
+
 @app.route('/edit/quiz<int:quizid>/question<int:questionid>', methods = ['GET', 'POST'])
-def edit_question(quizid, questionid):
+def edit_question(quizid, questionid, arguments):
     if "is_admin" in session and "is_logged_in" in session:
         if session["is_admin"] and session["is_logged_in"]:
-            form = Question(request.form)
+            questionForm = Question(request.form)
+            optionsForm = Options(request.form)
 
-            if request.method == "POST" and form.validate():
-                question = form.question.data
-                answer1 = form.answer1.data
-                answer2 = form.answer2.data
-                answer3 = form.answer3.data
-                answer4 = form.answer4.data
-                
-                correctAnswer = form.correctAnswer.data
+            if request.method == "POST" and questionForm.validate() and optionsForm.validate():
+                question = questionForm.question.data
+                type = questionForm.type.data
 
-                creat_new_question = "UPDATE `question` SET Question = %s, Answer1 = %s, Answer2 = %s, Answer3 = %s, Answer4 = %s, Correct_answer = %s WHERE Question_ID = %s"
-                args = (question, answer1, answer2, answer3, answer4, correctAnswer, questionid)
+                option1 = optionsForm.option1.data
+                option2 = optionsForm.option2.data
+                option3 = optionsForm.option3.data
+                option4 = optionsForm.option4.data
+
+                creat_new_options = "UPDATE `choices` SET choice1 = %s, choice2 = %s, choice3 = %s, choice4 = %s, question_question_ID = %s, question_quiz = %s WHERE choices_ID = %s"
+                creat_new_question = "UPDATE `question` SET Question = %s, questionType = %s WHERE Question_ID = %s"
+                args = (question, questionid)
                 
                 cursor.execute(creat_new_question, args)
                 conn.commit() 
@@ -264,9 +213,62 @@ def edit_question(quizid, questionid):
             arg = [questionid]
             cursor.execute(creat_question_query, arg)
             questionInfo = cursor.fetchone()
-            form.correctAnswer.default = questionInfo[5]
-            return render_template("MakeQuestion.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
+            return render_template("EditQuestion.html", title="Question editing", info = questionInfo, questionID = questionid, questionForm=questionForm, optionsForm=optionsForm)
     return redirect(url_for("index"))
+
+@app.route('/deleteQuiz/<int:id>')
+def deleteQuiz(id):
+    if "is_admin" in session and "is_logged_in" in session:
+        if session["is_admin"] and session["is_logged_in"]:
+            id = [id]
+            delQuestionQuery = "DELETE FROM `question` WHERE Quiz = %s"
+            delQuery = "DELETE FROM `quiz` WHERE quiz_ID = %s"
+            
+            cursor.execute(delQuestionQuery, id)
+            cursor.execute(delQuery, id)
+            conn.commit()
+            return redirect(url_for('edit_list'))
+    return f'Fuck you'
+
+
+@app.route('/edit/delete/question/<int:questionid>/<int:quizid>')
+def deleteQuestion(questionid, quizid):
+    if "is_admin" in session and "is_logged_in" in session:
+        if session["is_admin"] and session["is_logged_in"]:
+
+            id = [questionid]
+            delQuery = "DELETE FROM `question` WHERE Question_ID = %s"
+            
+            cursor.execute(delQuery, id)
+            conn.commit()
+            MinusCount(quizid)
+            return redirect(url_for('edit_quiz', id = quizid))
+    return f'Fuck you'
+
+
+def PlusCount(quizID):
+    get_question_query = "SELECT totalQuestions FROM `quiz` WHERE quiz_ID = %s"
+    args = [quizID]
+    cursor.execute(get_question_query, args)
+    (value,) = cursor.fetchone()
+    value += 1
+
+    update_question_query = "UPDATE `quiz` SET totalQuestions = %s WHERE quiz_ID = %s"
+    arg = (value, quizID)
+    cursor.execute(update_question_query, arg)
+    conn.commit()
+
+def MinusCount(quizID):
+    get_question_query = "SELECT totalQuestions FROM `quiz` WHERE quiz_ID = %s"
+    args = [quizID]
+    cursor.execute(get_question_query, args)
+    (value,) = cursor.fetchone()
+    value -= 1
+    
+    update_question_query = "UPDATE `quiz` SET totalQuestions = %s WHERE quiz_ID = %s"
+    arg = (value, quizID)
+    cursor.execute(update_question_query, arg)
+    conn.commit()
 
 # ------------------ Play -------------------
 

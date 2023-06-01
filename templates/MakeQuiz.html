@@ -1,52 +1,38 @@
 {% extends "base.html" %}
 {% block body %}
-
 <section>
-    <a href="{{ url_for("edit_list")}}">Go back to quiz list</a><br> 
-    <form method="post" action={{ url_for("configure_quiz", quizid = quizInfo[0][2])}} >
-        <h2>Quiz</h2>
-        <input type="text" id="quizName" name="quizName" value="{{ quizInfo[0][0] }}">
-        <h2>Theme</h2>
-        <input type="text" id="quizTheme" name="quizTheme" value="{{ quizInfo[0][1] }}"><br>
-        <input type="submit">
-    </form>
-    <h1>Make questions: </h1>
+    <a href="{{ url_for("index")}}">Back to login</a><br>
+    <h1>Make a new quiz:</h1>
     {% from "_form_helper.html" import render_field %}
-    <form method="post">
-        <div id="MakeQuizContainer">
-            <div id="Questions">
-                {{ render_field(form.question) }}
-                {{ render_field(form.answer1) }}
-                {{ render_field(form.answer2) }}
-                {{ render_field(form.answer3) }}
-                {{ render_field(form.answer4) }}
-            </div>
-            <div id="QuestionsRadio">
-                {{ render_field(form.correctAnswer) }}
-            </div>
-        </div>
-        <input type="submit" value="add question">
+    <form method="POST">
+        {{ render_field(form.quizName) }}
+        {{ render_field(form.quizTheme) }}
+        <input type="submit" value="add quiz">
     </form>
-    <h2>Question List:</h2>
+    <h2>Quiz List:</h2>
     <table>
         <tr>
-            <th>Question nr.</th>
-            <th>Question</th>
+            <th>Quiz nr.</th>
+            <th>Name</th>
+            <th>Desc</th>
+            <th>Questions</th>
             <th>Actions</th>
         </tr>
-        {% for i in range(quiz_len) %}
+        {% for (quiz, desc, nr, questions) in quizList %}
             <tr>
-                <td>{{ i+1 }}</td>
-                <td>{{ questionList[i][0] }}</td>
+                <td>{{ nr }}</td>
+                <td>{{ quiz }}</td>
+                <td>{{ desc }}</td>
+                <td>{{ questions }}</td>
                 <td>
-                    <a href="{{ url_for("edit_question", quizid=questionList[0][2], questionid=questionList[i][1]) }}">Edit</a>
+                    <a href="{{ url_for("edit_quiz", id=nr) }}">Edit</a>
                     <br>
-                    <a href="{{ url_for("deleteQuestion", quizid=questionList[0][2], questionid=questionList[i][1]) }}">Delete</a>
+                    <a href="{{ url_for("deleteQuiz", id=nr) }}">Delete</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
-
 </section>
+
 
 {% endblock %}
