@@ -3,8 +3,28 @@
     <section>
         <h1>{{question}}</h1>
         <form method="post">
+            {% if question_type == "Essay" %}
+                <textarea name="essey_textarea" id="essey_textarea" cols="30" rows="10"></textarea> <br>
+            {%elif question_type == "Flervalg"%}
+                {{render_flervalg(choices)}}
+            {%elif question_type == "Multiple choice"%}
+                {{render_multiple_choice(choices)}}
+            {%endif%}
             <input type="submit" value="submit">
         </form>
     </section>
-
 {% endblock %}
+
+{% macro render_flervalg(data) %}
+    <input type="checkbox" name="cb_choice" id="cb-1" value="1"><label for="cb-1">{{data[0]}}</label><br>
+    <input type="checkbox" name="cb_choice" id="cb-2" value="2"><label for="cb-2">{{data[1]}}</label><br>
+    <input type="checkbox" name="cb_choice" id="cb-3" value="3"><label for="cb-3">{{data[2]}}</label><br>
+    <input type="checkbox" name="cb_choice" id="cb-4" value="4"><label for="cb-4">{{data[3]}}</label><br>
+{% endmacro %}
+
+{% macro render_multiple_choice(data) %}
+    <input type="radio" name="mc_choice" id="mc-1" value="1" required><label for="mc-1">{{data[0]}}</label><br>
+    <input type="radio" name="mc_choice" id="mc-2" value="2"><label for="mc-2">{{data[1]}}</label><br>
+    <input type="radio" name="mc_choice" id="mc-3" value="3"><label for="mc-3">{{data[2]}}</label><br>
+    <input type="radio" name="mc_choice" id="mc-4" value="4"><label for="mc-4">{{data[3]}}</label><br>
+{% endmacro %}

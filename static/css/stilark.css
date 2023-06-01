@@ -137,3 +137,20 @@ input[type="text"], input[type="password"] {
     
     margin: 1vi;
 }
+
+#input_div {
+    display: flex;
+    justify-content: space-between;
+}
+
+#left_items {
+    display: flex;
+    padding-left: 5px;
+    margin-left: -5px;
+    left: 10px;
+}
+
+#right_items {
+    margin-right: -5px;
+    margin-left: auto;
+}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block body%}
+<section>
+    <a href="{{ url_for("grading")}}">&lt;--</a>
+    <table>
+        <tr>
+            <th> Name:</th>
+            <th>Time of play: </th>
+            <th>Quiz playthrough:</th>
+        </tr>
+        {% for (name, time, _, _) in quiz_users %}
+            <tr>
+                <td> {{ name }} </td>
+                <td> {{ time }} </td>
+                <td> <a href="{{url_for("user_quiz_grading", quiz_ID = quiz_ID, user = name, time = time)}}">GRADE</a> </td>
+            </tr>
+        {% endfor %}
+    </table>
+</section>
+{% endblock %}

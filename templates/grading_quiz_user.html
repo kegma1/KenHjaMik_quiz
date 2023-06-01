@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block body %}
+{% from "_form_helper.html" import render_field %}
+<section>
+    <form method="POST">
+    <table>
+        <a href="{{ url_for("quiz_grading", quiz_ID = quiz_ID)}}">&lt;--</a>
+        <h1>USERNAME: {{ quiz_ID_playthrough[0][2] }}</h1>
+        <h2>TIME: {{ quiz_ID_playthrough[0][4] }}</h2>
+        <br>
+    
+    {% for (question_ID, answer, user, comment, time, question, question_type, type) in quiz_ID_playthrough %}
+        <hr>
+        <h2>QUESTION: {{ question }}</h2>
+
+        {% if type == "Essay"%}
+            <p>Svar: "{{ answer }}"</p>
+
+        {% else %}
+            {% set choices = fetch_options(quiz_ID, question_ID, type, answer) %}
+            {{ choices|safe }}
+
+        {% endif %}
+        <br>
+        <div id="input_div">
+            <div id="left_items">
+            <input type="Radio" id="radio_button_correct-{{ loop.index }}" name="radio_button-{{ loop.index }}" value="2">
+            <label for="radio_button_correct-{{ loop.index }}">Correct</label>
+
+            <input type="Radio" id="radio_button_false-{{ loop.index }}" name="radio_button-{{ loop.index }}" value="3" required>
+            <label for="radio_button_false-{{ loop.index }}">False</label>
+            </div>
+
+            <div id="right_items">
+            <input type="text" id="text_field-{{ loop.index }}", name="text_field-{{ loop.index }}" placeholder="Comment">
+            </div>
+        </div>
+    {% endfor %}
+    </table>
+    <input type="Submit" name="Submit">
+    </form>
+</section>
+{% endblock %}

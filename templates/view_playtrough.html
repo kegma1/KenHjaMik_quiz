@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+<section>
+    <a href="{{ url_for("list_playthroughts")}}"><---</a><br>
+    {% for (status, comment, answer, question, type, question_nr, quiz_nr) in answers %}
+        <div>
+            <h1>{{ question }}</h1>
+            {% if type == "Essay"%}
+                <p>Svar: "{{ answer }}"</p>
+            {% else %}
+                {% set choices = fetch_options(quiz_nr, question_nr, type, answer) %}
+                {{ choices|safe }}
+            {% endif %}
+
+            <p>{{ status }}</p>
+            {% if comment != "" and comment != None%}
+                <p>Comment: "{{ comment }}"</p>
+            {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+    
+</section>
+{% endblock %}
