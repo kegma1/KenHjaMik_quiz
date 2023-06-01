@@ -125,7 +125,7 @@ def edit_list():
             cursor.execute(get_quiz_query)
             quizList = cursor.fetchall()
             
-            return render_template("quiz_List.html", title="Quiz list", quizList = quizList, form = form)
+            return render_template("make_quiz.html", title="Quiz list", quizList = quizList, form = form)
     return redirect(url_for("index"))
 
 class Question(Form):
@@ -164,7 +164,7 @@ def edit_quiz(id):
 
             quiz_len = len(questionList)
                 
-            return render_template("make_quiz.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
+            return render_template("make_question.html", title="Quiz editing", quizID = quizID, quiz_len = quiz_len, questionList = questionList, form = form, quizInfo = quizInfo)
     return redirect(url_for("index"))
 
 @app.route('/edit/update<int:quizid>', methods = ["GET", "POST"])
@@ -215,8 +215,7 @@ def edit_question(quizid, questionid, arguments):
             arg = [questionid]
             cursor.execute(creat_question_query, arg)
             questionInfo = cursor.fetchone()
-            form.correctAnswer.default = questionInfo[5]
-            return render_template("make_question.html", title="Question editing", info = questionInfo, questionID = questionid, form=form)
+            return render_template("make_question.html", title="Question editing", info = questionInfo, questionID = questionid, form=questionForm)
     return redirect(url_for("index"))
 
 @app.route('/deleteQuiz/<int:id>')
